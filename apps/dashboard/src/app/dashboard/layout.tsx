@@ -2,6 +2,7 @@ import { Navbar } from '@/components/navigation/Navbar';
 import { DashboardMenu } from '@/components/navigation/DashboardMenu';
 import { Box } from '@/components/ui/Box';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ProjectListProvider } from '@/contexts/ProjectListContext';
 import { WorkspaceProvider } from '@/contexts/WorkspaceContext';
 import { getProfile } from '@/actions/auth.actions';
 import { getWorkspaceSelectorData } from '@/actions/workspace.actions';
@@ -24,13 +25,15 @@ export default async function DashboardLayout({
         initialTotalCount={count}
         shouldPersistCurrent={shouldPersistCurrent}
       >
-        <Navbar />
-        <Box className={styles.body}>
-          <DashboardMenu />
-          <Box as="main" className={styles.main}>
-            {children}
+        <ProjectListProvider>
+          <Navbar />
+          <Box className={styles.body}>
+            <DashboardMenu />
+            <Box as="main" className={styles.main}>
+              {children}
+            </Box>
           </Box>
-        </Box>
+        </ProjectListProvider>
       </WorkspaceProvider>
     </AuthProvider>
   );

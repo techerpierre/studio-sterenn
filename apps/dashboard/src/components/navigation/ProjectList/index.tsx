@@ -8,7 +8,7 @@ import { CreateProjectForm } from '@/components/forms/CreateProjectForm';
 import { Box } from '@/components/ui/Box';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
-import { useProjectList } from '@/hooks/useProjectList';
+import { useProjectList } from '@/contexts/ProjectListContext';
 
 import { ProjectListEmpty } from './ProjectListEmpty';
 import { ProjectListSkeleton } from './ProjectListSkeleton';

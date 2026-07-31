@@ -2,14 +2,39 @@
 
 import { Project } from '@sterenn/api-contracts';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { listProjects } from '@/actions/project.actions';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 const PAGE_SIZE = 10;
 
-export function useProjectList() {
+export type ProjectListContextType = {
+  workspaceId: string | undefined;
+  projects: Project[];
+  totalCount: number;
+  loading: boolean;
+  hasMore: boolean;
+  isInitialLoading: boolean;
+  activeProjectId: string | undefined;
+  loadMore: () => Promise<void>;
+  addProject: (project: Project) => void;
+  patchProject: (project: Project) => void;
+};
+
+export const ProjectListContext =
+  createContext<ProjectListContextType | null>(null);
+
+export function ProjectListProvider({ children }: PropsWithChildren) {
   const pathname = usePathname();
   const { currentWorkspace } = useWorkspace();
   const workspaceId = currentWorkspace?.id;
@@ -31,6 +56,7 @@ export function useProjectList() {
       setProjects([]);
       setTotalCount(0);
       pageRef.current = 0;
+      setLoading(false);
       return;
     }
 
@@ -63,8 +89,8 @@ export function useProjectList() {
       });
   }, [workspaceId]);
 
-  const loadMore = async () => {
-    if (!workspaceId || loading || !hasMore) return;
+  const loadMore = useCallback(async () => {
+    if (!workspaceId || loading || projects.length >= totalCount) return;
 
     setLoading(true);
     try {
@@ -80,9 +106,9 @@ export function useProjectList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [workspaceId, loading, projects.length, totalCount]);
 
-  const addProject = (project: Project) => {
+  const addProject = useCallback((project: Project) => {
     setProjects((current) => {
       if (current.some((item) => item.id === project.id)) {
         return current;
@@ -90,17 +116,59 @@ export function useProjectList() {
       return [project, ...current];
     });
     setTotalCount((count) => count + 1);
-  };
+  }, []);
 
-  return {
-    workspaceId,
-    projects,
-    totalCount,
-    loading,
-    hasMore,
-    isInitialLoading,
-    activeProjectId,
-    loadMore,
-    addProject,
-  };
+  const patchProject = useCallback((project: Project) => {
+    setProjects((current) => {
+      const index = current.findIndex((item) => item.id === project.id);
+      if (index === -1) return current;
+
+      const next = [...current];
+      next[index] = project;
+      return next;
+    });
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      workspaceId,
+      projects,
+      totalCount,
+      loading,
+      hasMore,
+      isInitialLoading,
+      activeProjectId,
+      loadMore,
+      addProject,
+      patchProject,
+    }),
+    [
+      workspaceId,
+      projects,
+      totalCount,
+      loading,
+      hasMore,
+      isInitialLoading,
+      activeProjectId,
+      loadMore,
+      addProject,
+      patchProject,
+    ],
+  );
+
+  return (
+    <ProjectListContext.Provider value={value}>
+      {children}
+    </ProjectListContext.Provider>
+  );
+}
+
+export function useProjectList() {
+  const context = useContext(ProjectListContext);
+
+  if (!context) {
+    throw new Error('useProjectList must be used within a ProjectListProvider');
+  }
+
+  return context;
 }

@@ -1,0 +1,8 @@
+.form {
+    max-width: 400px;
+}
+
+.submit {
+    width: fit-content;
+    align-self: flex-end;
+}
