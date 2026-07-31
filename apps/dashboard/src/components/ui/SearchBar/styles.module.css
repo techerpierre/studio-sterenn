@@ -1,0 +1,23 @@
+.root :global(input[type='search']::-webkit-search-cancel-button) {
+  appearance: none;
+  display: none;
+}
+
+.clear {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.clear:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

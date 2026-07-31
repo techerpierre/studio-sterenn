@@ -1,0 +1,57 @@
+.list {
+  --tabs-gap: 4px;
+  --tabs-indicator-height: 2px;
+  --tabs-border-color: var(--color-surface-border);
+  --tabs-indicator-color: var(--color-primary);
+
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--tabs-gap);
+  max-width: 100%;
+  border-bottom: 1px solid var(--tabs-border-color);
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+.centered {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.default {
+  --tabs-indicator-color: var(--color-primary);
+}
+
+.secondary {
+  --tabs-indicator-color: var(--color-foreground);
+}
+
+.indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: var(--tabs-indicator-height);
+  width: var(--tabs-indicator-width, 0px);
+  border-radius: 9999px 9999px 0 0;
+  background: var(--tabs-indicator-color);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(var(--tabs-indicator-x, 0px));
+}
+
+.indicatorVisible {
+  opacity: 1;
+}
+
+.indicatorAnimate {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease;
+}

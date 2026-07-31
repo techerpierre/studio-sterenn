@@ -1,0 +1,64 @@
+.root {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.header {
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-foreground-muted);
+}
+
+.list {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.list:not(:hover) {
+  scrollbar-width: none;
+}
+
+.list:not(:hover)::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  width: 100%;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.active,
+.active:hover:not(:disabled) {
+  background-color: var(--color-accent);
+  color: var(--color-foreground);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 0;
+  padding: 8px 4px;
+  color: var(--color-foreground-muted);
+}
+
+.loadMore {
+  width: 100%;
+  min-width: 0;
+}

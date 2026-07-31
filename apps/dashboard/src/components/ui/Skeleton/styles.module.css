@@ -1,0 +1,45 @@
+.skeleton {
+  --skeleton-radius: 8px;
+  --skeleton-base: color-mix(in srgb, var(--color-surface-accent) 30%, transparent);
+  --skeleton-shine: color-mix(in srgb, var(--color-surface-accent) 90%, transparent);
+
+  display: block;
+  width: 100%;
+  height: 1em;
+  border-radius: var(--skeleton-radius);
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-shine) 45%,
+    var(--skeleton-base) 90%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.rounded {
+  --skeleton-radius: 9999px;
+}
+
+.circle {
+  --skeleton-radius: 9999px;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: var(--skeleton-base);
+  }
+}

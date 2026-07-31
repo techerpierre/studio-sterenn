@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 50px;
+}
+
+.titleGroup {
+  min-width: 0;
+}
+
+.right {
+  flex-shrink: 0;
+}

@@ -1,0 +1,30 @@
+.separator {
+  --separator-color: var(--color-foreground-muted);
+  --separator-height: 1px;
+  --separator-gap: 12px;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.line {
+  flex: 1;
+  min-width: 0;
+  height: var(--separator-height);
+  background: var(--separator-color);
+}
+
+.light {
+  --separator-color: var(--color-surface-border);
+}
+
+
+.label {
+  --label-margin-x: calc(var(--separator-gap) / 2);
+
+  flex-shrink: 0;
+  margin: 0 var(--label-margin-x);
+  color: var(--separator-color);
+  white-space: nowrap;
+}

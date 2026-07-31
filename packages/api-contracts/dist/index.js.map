@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/contracts/membership/enums.ts"],"sourcesContent":["export enum MembershipRole {\n  ADMIN = \"ADMIN\",\n  MEMBER = \"MEMBER\",\n}\n"],"mappings":";AAAO,IAAK,iBAAL,kBAAKA,oBAAL;AACL,EAAAA,gBAAA,WAAQ;AACR,EAAAA,gBAAA,YAAS;AAFC,SAAAA;AAAA,GAAA;","names":["MembershipRole"]}

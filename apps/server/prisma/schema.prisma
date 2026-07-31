@@ -1,0 +1,88 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  moduleFormat    = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique @db.VarChar(50)
+  passwordHash String @db.VarChar(515)
+  firstName String @db.VarChar(50)
+  lastName String @db.VarChar(50)
+  memberships Membership[]
+  tasks Task[]
+}
+
+model Workspace {
+  id String @id @default(cuid())
+  name String @db.VarChar(250)
+  memberships Membership[]
+  projects Project[]
+}
+
+enum MembershipRole {
+  ADMIN
+  MEMBER
+}
+
+model Membership {
+  id String @id @default(cuid())
+  role MembershipRole
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  workspaceId String
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  @@unique([userId, workspaceId])
+}
+
+model Project {
+  id String @id @default(cuid())
+  name String @db.VarChar(50)
+  slug String @db.VarChar(50)
+  workspaceId String
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  tasks Task[]
+  states TaskState[]
+}
+
+model TaskState {
+  id String @id @default(cuid())
+  name String
+  color String @db.VarChar(7)
+  rank String
+  projectId String
+  project Project @relation(fields: [projectId], references: [id])
+  tasks Task[]
+
+  @@index([projectId, rank])
+}
+
+model Task {
+  id String @id @default(cuid())
+  title String @db.VarChar(250)
+  content String @db.VarChar(1024)
+  dueDate DateTime?
+  rank String
+  finishedAt DateTime?
+  projectId String
+  project Project @relation(fields: [projectId], references: [id])
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id])
+  stateId String?
+  state TaskState? @relation(fields: [stateId], references: [id], onDelete: SetNull)
+
+  @@index([projectId, stateId])
+  @@index([stateId, rank])
+}
+
+model PinCode2FA {
+  id String @id @default(cuid())
+  code String @db.VarChar(6) @unique
+  userId String
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,79 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.root.align-filled {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  left: auto;
+  right: auto;
+}
+
+.root.align-filled > :first-child {
+  width: 100%;
+  min-width: 0;
+}
+
+.triggerButton {
+  --trigger-border-width: 1px;
+  --trigger-radius: 12px;
+  --trigger-border: transparent;
+  --trigger-shadow: none;
+  --trigger-shadow-open: 0 0 0 4px
+    color-mix(
+      in srgb,
+      var(--input-shadow-focus-base-color-override, var(--color-primary)) 12%,
+      transparent
+    );
+
+  appearance: none;
+  display: inline-flex;
+  margin: 0;
+  padding: 0;
+  border: var(--trigger-border-width) solid var(--trigger-border);
+  border-radius: var(--trigger-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  line-height: inherit;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+  box-shadow: var(--trigger-shadow);
+}
+
+.triggerButtonOpen {
+  --trigger-border: var(--input-focus-border-override, var(--color-primary));
+  --trigger-shadow: var(--trigger-shadow-open);
+}
+
+.triggerButtonRounded {
+  --trigger-radius: 9999px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  padding: 0;
+  border: 1px solid var(--color-surface-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px color-mix(in srgb, #000 12%, transparent);
+}
+
+.menuScrollable {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.menu > :first-child {
+  padding-top: 6px;
+}
+
+.menu > :last-child {
+  padding-bottom: 6px;
+}

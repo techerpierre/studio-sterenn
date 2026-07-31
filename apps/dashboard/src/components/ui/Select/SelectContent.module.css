@@ -1,0 +1,144 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: top;
+}
+
+.customTrigger {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.customTrigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.trigger {
+  --input-shadow-focus: 0 0 0 4px
+    color-mix(
+      in srgb,
+      var(--input-shadow-focus-base-color-override, var(--color-primary)) 12%,
+      transparent
+    );
+
+  justify-content: space-between;
+  width: 100%;
+  min-width: 160px;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease;
+}
+
+button.trigger:focus-visible,
+.triggerOpen {
+  outline: none;
+  border-color: var(--input-focus-border-override, var(--color-primary));
+  box-shadow: var(--input-shadow-focus);
+}
+
+button.variant-secondary:focus-visible,
+.variant-secondary.triggerOpen {
+  --btn-bg: var(--color-surface);
+  --btn-border: var(--color-surface-border);
+  --btn-bg-hover: var(--color-surface);
+  --btn-bg-active: var(--color-surface);
+  background-color: var(--color-surface);
+  border-color: var(--color-primary);
+  box-shadow: var(--input-shadow-focus);
+}
+
+.triggerLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.chevron {
+  flex-shrink: 0;
+  transition: transform 160ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.menu {
+  /* Must live on .menu (portaled), not .root — custom props don't cross portals. */
+  --select-menu-max-height: 240px;
+  --select-menu-width: 160px;
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 160px;
+  padding: 0;
+  border: 1px solid var(--color-surface-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px color-mix(in srgb, #000 12%, transparent);
+  overflow: hidden;
+}
+
+.search {
+  flex-shrink: 0;
+  padding: 8px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: var(--select-menu-max-height);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.list > :first-child {
+  padding-top: 6px;
+}
+
+.list > :last-child {
+  padding-bottom: 6px;
+}
+
+.emptyPlaceholder {
+  padding: 12px 14px;
+  color: var(--color-foreground-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.list > * {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.menuAutoWidth {
+  width: var(--select-menu-width);
+  min-width: max(100%, var(--select-menu-width));
+  max-width: none;
+}

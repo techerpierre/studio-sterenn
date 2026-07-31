@@ -1,0 +1,215 @@
+.button {
+    --btn-height: 32px;
+    --btn-min-width: 104px;
+    --btn-padding-x: 14px;
+    --btn-padding-y: 8px;
+    --btn-radius: 12px;
+    --btn-gap: 6px;
+    --btn-font-size: 14px;
+    --btn-font-weight: 600;
+    --btn-line-height: 1;
+
+    --btn-bg: transparent;
+    --btn-fg: var(--color-primary);
+    --btn-border: transparent;
+
+    --btn-shadow: none;
+    --btn-outline-width: 3px;
+    --btn-outline-color: color-mix(
+      in srgb,
+      var(--color-primary) 35%,
+      transparent
+    );
+
+    --btn-transition: 160ms ease;
+    --btn-bg-disabled: var(--color-surface-muted);
+    --btn-fg-disabled: var(--color-foreground-muted);
+    --btn-bg-hover: color-mix(in srgb, var(--btn-bg) 80%, white);
+    --btn-bg-active: color-mix(in srgb, var(--btn-bg) 88%, black);
+
+    appearance: none;
+    border: 1px solid var(--btn-border);
+    border-radius: var(--btn-radius);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    min-height: var(--btn-height);
+    min-width: var(--btn-min-width);
+    padding: var(--btn-padding-y) var(--btn-padding-x);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--btn-gap);
+    font-size: var(--btn-font-size);
+    font-weight: var(--btn-font-weight);
+    line-height: var(--btn-line-height);
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: var(--btn-shadow);
+    transition:
+      background-color var(--btn-transition),
+      color var(--btn-transition),
+      border-color var(--btn-transition);
+  }
+
+  .button:focus-visible {
+    outline: var(--btn-outline-width) solid var(--btn-outline-color);
+    outline-offset: 2px;
+  }
+
+  .button:hover:not(:disabled) {
+    background-color: var(--btn-bg-hover);
+  }
+
+  .button:active:not(:disabled) {
+    background-color: var(--btn-bg-active);
+  }
+
+  .xs {
+    --btn-height: 24px;
+    --btn-min-width: 72px;
+    --btn-padding-x: 10px;
+    --btn-padding-y: 4px;
+    --btn-gap: 4px;
+    --btn-font-size: 12px;
+    --btn-radius: 10px;
+  }
+
+  .sm {
+    --btn-height: 28px;
+    --btn-min-width: 88px;
+    --btn-padding-x: 12px;
+    --btn-padding-y: 8px;
+    --btn-gap: 4px;
+    --btn-font-size: 13px;
+  }
+
+  .md {
+    --btn-height: 32px;
+    --btn-min-width: 104px;
+    --btn-padding-x: 14px;
+    --btn-padding-y: 10px;
+    --btn-gap: 6px;
+    --btn-font-size: 14px;
+  }
+
+  .lg {
+    --btn-height: 36px;
+    --btn-min-width: 120px;
+    --btn-padding-x: 16px;
+    --btn-padding-y: 12px;
+    --btn-gap: 8px;
+    --btn-font-size: 16px;
+  }
+
+  .rounded {
+    --btn-radius: 9999px;
+  }
+
+  .icon {
+    --btn-min-width: var(--btn-height);
+    width: var(--btn-height);
+    height: var(--btn-height);
+    min-width: var(--btn-height);
+    min-height: var(--btn-height);
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .default {
+    --btn-bg: var(--color-primary);
+    --btn-fg: var(--color-primary-foreground);
+    --btn-border: transparent;
+    --btn-bg-hover: color-mix(in srgb, var(--color-primary) 85%, black);
+    --btn-bg-active: color-mix(in srgb, var(--color-primary) 75%, black);
+    --btn-outline-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+
+  .outline {
+    --btn-bg: var(--color-surface);
+    --btn-fg: var(--color-foreground);
+    --btn-border: var(--color-surface-border);
+    --btn-bg-hover: var(--color-surface-muted);
+    --btn-bg-active: color-mix(in srgb, var(--color-surface-muted) 90%, black);
+    --btn-outline-color: color-mix(in srgb, var(--color-foreground) 25%, transparent);
+  }
+
+  .secondary {
+    --btn-bg: var(--color-surface-accent);
+    --btn-fg: var(--color-surface-accent-foreground);
+    --btn-border: transparent;
+    --btn-bg-hover: color-mix(in srgb, var(--color-surface-accent) 90%, black);
+    --btn-bg-active: color-mix(in srgb, var(--color-surface-accent) 80%, black);
+    --btn-outline-color: color-mix(in srgb, var(--color-foreground) 25%, transparent);
+  }
+
+  .ghost {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-foreground);
+    --btn-border: transparent;
+    --btn-bg-hover: var(--color-surface-muted);
+    --btn-bg-active: color-mix(in srgb, var(--color-surface-muted) 90%, black);
+    --btn-outline-color: color-mix(in srgb, var(--color-foreground) 25%, transparent);
+  }
+
+  .muted {
+    --btn-bg: var(--color-primary-muted);
+    --btn-fg: var(--color-primary);
+    --btn-border: transparent;
+    --btn-bg-hover: color-mix(in srgb, var(--color-primary-muted) 80%, var(--color-primary));
+    --btn-bg-active: color-mix(in srgb, var(--color-primary-muted) 65%, var(--color-primary));
+    --btn-outline-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+
+  .danger {
+    --btn-bg: var(--color-danger-muted);
+    --btn-fg: var(--color-danger);
+    --btn-border: transparent;
+    --btn-bg-hover: color-mix(in srgb, var(--color-danger-muted) 80%, var(--color-danger));
+    --btn-bg-active: color-mix(in srgb, var(--color-danger-muted) 65%, var(--color-danger));
+    --btn-outline-color: color-mix(in srgb, var(--color-danger) 35%, transparent);
+  }
+
+  .success {
+    --btn-bg: var(--color-success-muted);
+    --btn-fg: var(--color-success);
+    --btn-border: transparent;
+    --btn-bg-hover: color-mix(in srgb, var(--color-success-muted) 80%, var(--color-success));
+    --btn-bg-active: color-mix(in srgb, var(--color-success-muted) 65%, var(--color-success));
+    --btn-outline-color: color-mix(in srgb, var(--color-success) 35%, transparent);
+  }
+
+  .warning {
+    --btn-bg: var(--color-warning-muted);
+    --btn-fg: var(--color-warning);
+    --btn-border: transparent;
+    --btn-bg-hover: color-mix(in srgb, var(--color-warning-muted) 80%, var(--color-warning));
+    --btn-bg-active: color-mix(in srgb, var(--color-warning-muted) 65%, var(--color-warning));
+    --btn-outline-color: color-mix(in srgb, var(--color-warning) 35%, transparent);
+  }
+
+  .disabled,
+  .button:disabled {
+    --btn-bg: var(--btn-bg-disabled);
+    --btn-fg: var(--btn-fg-disabled);
+    --btn-border: transparent;
+    background-color: var(--btn-bg);
+    color: var(--btn-fg);
+  }
+
+  .ghost:disabled {
+    --btn-bg: transparent;
+    background-color: transparent;
+  }
+
+  .button:disabled:not(.loading) {
+    cursor: not-allowed;
+  }
+
+  .loading {
+    cursor: default;
+  }
+
+  .loader {
+    --loader-color: var(--btn-fg);
+  }

@@ -1,0 +1,192 @@
+.root {
+  --input-height: 36px;
+  --input-padding-x: 14px;
+  --input-padding-y: 8px;
+  --input-radius: 12px;
+  --input-border-width: 1px;
+  --input-font-size: 14px;
+  --input-gap: 8px;
+
+  --input-bg: var(--color-surface);
+  --input-fg: var(--color-foreground);
+  --input-placeholder: var(--color-foreground-muted);
+  --input-border: var(--color-surface-border);
+  --input-bg-disabled: var(--color-disabled);
+  --input-fg-disabled: var(--color-disabled-foreground);
+  --input-placeholder-disabled: var(--color-disabled-foreground);
+  --input-shadow-focus: 0 0 0 4px
+    color-mix(in srgb, var(--input-shadow-focus-base-color-override, var(--color-primary)) 12%, transparent);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--input-gap);
+  width: 100%;
+  min-height: var(--input-height);
+  padding: var(--input-padding-y) var(--input-padding-x);
+  border: var(--input-border-width) solid var(--input-border);
+  border-radius: var(--input-radius);
+  background: var(--input-bg);
+  color: var(--input-fg);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.sm {
+  --input-height: 32px;
+  --input-padding-x: 12px;
+  --input-padding-y: 6px;
+  --input-font-size: 13px;
+  --input-gap: 6px;
+}
+
+.md {
+  --input-height: 36px;
+  --input-padding-x: 14px;
+  --input-padding-y: 8px;
+  --input-font-size: 14px;
+  --input-gap: 8px;
+}
+
+.lg {
+  --input-height: 40px;
+  --input-padding-x: 16px;
+  --input-padding-y: 10px;
+  --input-font-size: 16px;
+  --input-gap: 10px;
+}
+
+.rounded {
+  --input-radius: 9999px;
+}
+
+.default {
+  --input-bg: var(--color-surface);
+  --input-border: var(--color-surface-border);
+}
+
+.secondary {
+  --input-bg: var(--color-surface-accent);
+  --input-border: transparent;
+  --input-placeholder: var(--color-surface-accent-foreground);
+}
+
+.ghost {
+  --input-bg: transparent;
+  --input-border: transparent;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--input-placeholder);
+  line-height: 1;
+}
+
+.input {
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  outline: none;
+  padding: 0;
+}
+
+.typographyFromSize {
+  font-size: var(--input-font-size);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.withTextType {
+  min-height: unset;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.multiline {
+  align-items: flex-start;
+}
+
+.textarea {
+  resize: none;
+  min-height: calc(var(--input-font-size) * 1.4);
+}
+
+.textareaAuto {
+  overflow: hidden;
+  field-sizing: content;
+  height: auto;
+}
+
+.input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.root:focus-within {
+  border-color: var(--input-focus-border-override, var(--color-primary));
+  box-shadow: var(--input-shadow-focus);
+}
+
+.secondary:focus-within {
+  --input-bg: var(--color-surface);
+  --input-border: var(--color-surface-border);
+  --input-placeholder: var(--color-foreground-muted);
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+}
+
+.ghost:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.disabled {
+  background: var(--input-bg-disabled);
+  color: var(--input-fg-disabled);
+  cursor: not-allowed;
+}
+
+.disabled .item {
+  color: var(--input-placeholder-disabled);
+}
+
+.disabled .input::placeholder {
+  color: var(--input-placeholder-disabled);
+}
+
+.disabled:focus-within {
+  border-color: var(--input-border);
+  box-shadow: none;
+}
+
+.loader {
+  --loader-color: var(--input-placeholder);
+}
+
+.toggle {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.toggle:disabled {
+  cursor: not-allowed;
+}
+

@@ -1,0 +1,71 @@
+.heading1 {
+  font-weight: 900;
+  font-style: Black;
+  font-size: 48px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.heading2 {
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.heading3 {
+  font-weight: 600;
+  font-style: Semi Bold;
+  font-size: 28px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.heading4 {
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 22px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.bodyLarge {
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.bodyDefault {
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.bodySmall {
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.caption {
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 10px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}

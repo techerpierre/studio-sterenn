@@ -1,0 +1,24 @@
+.formField {
+  --label-margin-bottom: 12px;
+  --caption-margin-top: 8px;
+}
+
+.formField:has(.error) {
+  --input-focus-border-override: var(--color-danger);
+  --input-shadow-focus-base-color-override: var(--color-danger);
+}
+
+.label {
+  color: var(--color-foreground-muted);
+  margin-bottom: var(--label-margin-bottom);
+}
+
+.caption {
+  color: var(--color-foreground-muted);
+  margin-top: var(--caption-margin-top);
+}
+
+.error {
+  color: var(--color-danger);
+  margin-top: var(--caption-margin-top);
+}

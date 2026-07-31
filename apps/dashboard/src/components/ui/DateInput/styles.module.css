@@ -1,0 +1,42 @@
+.root {
+  position: relative;
+  width: 100%;
+}
+
+.trigger {
+  width: 100%;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+}
+
+.triggerLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: var(--input-placeholder);
+}
+
+.overlay {
+  /* Positioned by floating-ui (fixed + portal). */
+  outline: none;
+}
+
+.hiddenInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}

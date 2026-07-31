@@ -1,0 +1,60 @@
+.itemWrap {
+  padding: 2px 6px;
+}
+
+.item {
+  --item-fg: var(--color-foreground);
+  --item-bg-hover: var(--color-surface-muted);
+
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--item-fg);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.default {
+  --item-fg: var(--color-foreground);
+  --item-bg-hover: var(--color-surface-muted);
+}
+
+.danger {
+  --item-fg: var(--color-danger);
+  --item-bg-hover: var(--color-danger-muted);
+}
+
+.success {
+  --item-fg: var(--color-success);
+  --item-bg-hover: var(--color-success-muted);
+}
+
+.warning {
+  --item-fg: var(--color-warning);
+  --item-bg-hover: var(--color-warning-muted);
+}
+
+.item:hover:not(:disabled),
+.item:focus-visible {
+  background: var(--item-bg-hover);
+  outline: none;
+}
+
+.item:disabled {
+  color: var(--color-disabled-foreground);
+  cursor: not-allowed;
+}

@@ -1,0 +1,88 @@
+.badge {
+  --badge-height: 22px;
+  --badge-padding-x: 8px;
+  --badge-radius: 8px;
+  --badge-font-size: 12px;
+  --badge-font-weight: 600;
+  --badge-bg: var(--color-accent);
+  --badge-fg: var(--color-primary);
+  --badge-border: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: var(--badge-height);
+  padding: 0 var(--badge-padding-x);
+  border: 1px solid var(--badge-border);
+  border-radius: var(--badge-radius);
+  background: var(--badge-bg);
+  color: var(--badge-fg);
+  font-size: var(--badge-font-size);
+  font-weight: var(--badge-font-weight);
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  width: fit-content;
+}
+
+.sm {
+  --badge-height: 18px;
+  --badge-padding-x: 6px;
+  --badge-font-size: 10px;
+  --badge-radius: 6px;
+}
+
+.md {
+  --badge-height: 22px;
+  --badge-padding-x: 8px;
+  --badge-font-size: 12px;
+  --badge-radius: 8px;
+}
+
+.lg {
+  --badge-height: 26px;
+  --badge-padding-x: 10px;
+  --badge-font-size: 13px;
+  --badge-radius: 10px;
+}
+
+.rounded {
+  --badge-radius: 9999px;
+}
+
+.default {
+  --badge-bg: var(--color-accent);
+  --badge-fg: var(--color-primary);
+  --badge-border: transparent;
+}
+
+.secondary {
+  --badge-bg: var(--color-surface-accent);
+  --badge-fg: var(--color-foreground);
+  --badge-border: transparent;
+}
+
+.danger {
+  --badge-bg: var(--color-danger-muted);
+  --badge-fg: var(--color-danger);
+  --badge-border: transparent;
+}
+
+.success {
+  --badge-bg: var(--color-success-muted);
+  --badge-fg: var(--color-success);
+  --badge-border: transparent;
+}
+
+.warning {
+  --badge-bg: var(--color-warning-muted);
+  --badge-fg: var(--color-warning);
+  --badge-border: transparent;
+}
+
+.outline {
+  --badge-bg: var(--color-surface);
+  --badge-fg: var(--color-foreground);
+  --badge-border: var(--color-surface-border);
+}

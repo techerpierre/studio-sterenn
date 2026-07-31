@@ -1,0 +1,14 @@
+.body {
+  min-width: 0;
+}
+
+.main {
+  --dashboard-navbar-height: 64px;
+  --content-border-radius: 12px;
+
+  flex: 1;
+  min-width: 0;
+  min-height: calc(100vh - var(--dashboard-navbar-height));
+  background: var(--color-surface);
+  border-top-left-radius: var(--content-border-radius);
+}

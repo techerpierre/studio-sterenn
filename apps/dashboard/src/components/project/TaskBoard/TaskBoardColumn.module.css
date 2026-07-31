@@ -1,0 +1,74 @@
+.column {
+  flex: 0 0 auto;
+  width: 280px;
+  min-width: 280px;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--color-background-muted);
+}
+
+.column:hover .editIcon,
+.column:focus-within .editIcon,
+.column:hover .addTask,
+.column:focus-within .addTask {
+  opacity: 1;
+}
+
+.columnTitle {
+  min-width: 0;
+  flex: 0 0 auto;
+  width: 100%;
+  padding: 12px 12px 0;
+}
+
+.columnTitleMain {
+  min-width: 0;
+  flex: 1;
+}
+
+.colorDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.columnNameButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.columnNameButton:hover {
+  opacity: 0.8;
+}
+
+.editIcon {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 12px 12px;
+}
+
+.addTask {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}

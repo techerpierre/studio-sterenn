@@ -1,0 +1,29 @@
+.menu {
+  --dashboard-menu-width: 250px;
+  --dashboard-menu-padding: 16px;
+  --dashboard-menu-navbar-height: 64px;
+
+  width: var(--dashboard-menu-width);
+  height: calc(100vh - var(--dashboard-menu-navbar-height));
+  min-height: 0;
+  padding: var(--dashboard-menu-padding);
+  border: none;
+  overflow: hidden;
+}
+
+.dashboardLink {
+  flex-shrink: 0;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.active,
+.active:hover:not(:disabled) {
+  background-color: var(--color-accent);
+  color: var(--color-foreground);
+}
+
+.workspaceSwitcher {
+  flex-shrink: 0;
+  width: 100%;
+}

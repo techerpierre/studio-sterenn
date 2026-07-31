@@ -1,0 +1,106 @@
+.root {
+  --otp-size: 44px;
+  --otp-radius: 12px;
+  --otp-gap: 8px;
+  --otp-font-size: 18px;
+  --otp-border-width: 1px;
+
+  --otp-bg: var(--color-surface);
+  --otp-fg: var(--color-foreground);
+  --otp-border: var(--color-surface-border);
+  --otp-bg-disabled: var(--color-disabled);
+  --otp-fg-disabled: var(--color-disabled-foreground);
+  --otp-shadow-focus: 0 0 0 4px
+    color-mix(
+      in srgb,
+      var(--input-shadow-focus-base-color-override, var(--color-primary)) 12%,
+      transparent
+    );
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--otp-gap);
+}
+
+.sm {
+  --otp-size: 36px;
+  --otp-font-size: 14px;
+  --otp-gap: 6px;
+}
+
+.md {
+  --otp-size: 44px;
+  --otp-font-size: 18px;
+  --otp-gap: 8px;
+}
+
+.lg {
+  --otp-size: 52px;
+  --otp-font-size: 22px;
+  --otp-gap: 10px;
+}
+
+.rounded {
+  --otp-radius: 9999px;
+}
+
+.default {
+  --otp-bg: var(--color-surface);
+  --otp-border: var(--color-surface-border);
+}
+
+.secondary {
+  --otp-bg: var(--color-surface-accent);
+  --otp-border: transparent;
+}
+
+.cell {
+  appearance: none;
+  width: var(--otp-size);
+  height: var(--otp-size);
+  border: var(--otp-border-width) solid var(--otp-border);
+  border-radius: var(--otp-radius);
+  background: var(--otp-bg);
+  color: var(--otp-fg);
+  font: inherit;
+  font-size: var(--otp-font-size);
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.cell:focus-visible {
+  border-color: var(--input-focus-border-override, var(--color-primary));
+  box-shadow: var(--otp-shadow-focus);
+}
+
+.secondary .cell:focus-visible {
+  background: var(--color-surface);
+  border-color: var(--input-focus-border-override, var(--color-primary));
+}
+
+.disabled .cell {
+  background: var(--otp-bg-disabled);
+  color: var(--otp-fg-disabled);
+  cursor: not-allowed;
+}
+
+.disabled .cell:focus-visible {
+  border-color: var(--otp-border);
+  box-shadow: none;
+}
+
+.loaderWrap {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.loader {
+  --loader-color: var(--color-foreground-muted);
+}

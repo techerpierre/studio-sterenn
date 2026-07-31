@@ -1,0 +1,54 @@
+.root {
+  /* visual tokens come from TextInput shell classes */
+  width: fit-content;
+}
+
+.segments {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.segment {
+  appearance: textfield;
+  width: 2.25ch;
+  min-width: 2.25ch;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--input-font-size);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  text-align: center;
+  outline: none;
+  padding: 0;
+}
+
+.segment::-webkit-outer-spin-button,
+.segment::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.segment::placeholder {
+  color: var(--input-placeholder);
+}
+
+.separator {
+  flex-shrink: 0;
+  color: var(--input-placeholder);
+  font-size: var(--input-font-size);
+  line-height: 1;
+  user-select: none;
+}
+
+.disabled .segment {
+  cursor: not-allowed;
+  color: var(--input-fg-disabled);
+}
+
+.disabled .separator {
+  color: var(--input-placeholder-disabled);
+}

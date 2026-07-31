@@ -1,0 +1,19 @@
+.root {
+  width: 100%;
+}
+
+.subtitle {
+  color: var(--color-foreground-muted);
+}
+
+.list {
+  max-height: min(360px, 45vh);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.empty {
+  margin: 0;
+  padding: 8px 4px;
+  color: var(--color-foreground-muted);
+}

@@ -1,0 +1,15 @@
+.root {
+  min-width: 0;
+}
+
+.board {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 8px;
+}
+
+.boardRow {
+  width: max-content;
+  min-width: 100%;
+  align-items: flex-start;
+}

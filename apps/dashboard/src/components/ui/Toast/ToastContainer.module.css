@@ -1,0 +1,22 @@
+.container {
+  position: fixed;
+  z-index: 1100;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(100% - 32px, 360px);
+  pointer-events: none;
+}
+
+.container > * {
+  pointer-events: auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    right: 24px;
+    bottom: 24px;
+  }
+}

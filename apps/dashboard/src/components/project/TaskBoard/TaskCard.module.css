@@ -1,0 +1,42 @@
+.formRoot {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.item {
+  width: 100%;
+  min-width: 0;
+  cursor: grab;
+  user-select: none;
+}
+
+.item:active {
+  cursor: grabbing;
+}
+
+.item[data-dragging] {
+  cursor: grabbing;
+}
+
+.item[data-dragging] .taskCard {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.taskCard {
+  width: 100%;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.title {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dueBadge {
+  flex-shrink: 0;
+  align-self: flex-start;
+}

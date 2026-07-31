@@ -1,0 +1,54 @@
+.item {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-foreground);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.item:hover:not(:disabled) {
+  background: var(--color-surface-muted);
+}
+
+.item:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-foreground) 25%, transparent);
+  outline-offset: 2px;
+}
+
+.selected,
+.selected:hover:not(:disabled) {
+  background: var(--color-primary-muted);
+  color: var(--color-foreground);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check {
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.item:disabled {
+  color: var(--color-disabled-foreground);
+  cursor: not-allowed;
+}

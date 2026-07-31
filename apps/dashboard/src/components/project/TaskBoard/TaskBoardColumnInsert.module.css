@@ -1,0 +1,35 @@
+.insert {
+  position: relative;
+  flex: 0 0 16px;
+  align-self: stretch;
+  min-height: 100vh;
+}
+
+.hitArea {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.hitArea :global(button),
+.trigger {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.92);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+}
+
+.insert:hover .hitArea :global(button),
+.insert:hover .trigger,
+.insert:focus-within .hitArea :global(button),
+.insert:focus-within .trigger {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}

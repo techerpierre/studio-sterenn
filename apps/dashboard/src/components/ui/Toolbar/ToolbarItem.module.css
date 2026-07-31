@@ -1,0 +1,24 @@
+.item {
+  flex-shrink: 0;
+}
+
+.active {
+  --btn-bg: color-mix(
+    in srgb,
+    var(--color-surface-muted) 85%,
+    var(--color-primary)
+  );
+  --btn-fg: var(--color-primary);
+  --btn-bg-hover: color-mix(
+    in srgb,
+    var(--color-surface-muted) 75%,
+    var(--color-primary)
+  );
+  --btn-bg-active: color-mix(
+    in srgb,
+    var(--color-surface-muted) 70%,
+    var(--color-primary)
+  );
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+}
