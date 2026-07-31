@@ -33,7 +33,7 @@ export type UpdateTaskData = {
   stateId?: string | null;
   /** Si absent, l'ordre de la task n'est pas modifié. */
   order?: RelativeOrder;
-  finished?: boolean;
+  archived?: boolean;
 };
 
 export type CreateTaskParams = SessionUserParam;

@@ -15,7 +15,7 @@ export interface UpdateTaskData {
   ownerId?: string;
   stateId?: string | null;
   order?: RelativeOrder;
-  finished?: boolean;
+  archived?: boolean;
 }
 
 export interface ListTasksParams extends PaginationParams {

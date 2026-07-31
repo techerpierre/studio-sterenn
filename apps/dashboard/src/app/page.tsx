@@ -820,14 +820,14 @@ export default function Home() {
              <ValidateActionDialog
               critical
               criticalVariant="warning"
-              trigger={<Button variant="warning">Marquer comme terminée</Button>}
-              title="Êtes-vous sûr de vouloir marquer cette tâche comme terminée ?"
-              description="Cette action est irréversible. La tâche sera marquée comme terminée et ne sera plus visible dans la liste des tâches."
-              validateLabel="Marquer comme terminée"
+              trigger={<Button variant="warning">Archiver</Button>}
+              title="Êtes-vous sûr de vouloir archiver cette tâche ?"
+              description="Cette action est irréversible. La tâche sera archivée et ne sera plus visible dans la liste des tâches."
+              validateLabel="Archiver"
               cancelLabel="Annuler"
               onValidate={async () => {
                 await new Promise((resolve) => setTimeout(resolve, 400));
-                console.log("marked as finished");
+                console.log("marked as archived");
               }}
             />
           </Box>

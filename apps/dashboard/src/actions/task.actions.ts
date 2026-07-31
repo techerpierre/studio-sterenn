@@ -83,13 +83,13 @@ export async function deleteTask(taskId: string): Promise<void> {
   return core.task.delete(taskId);
 }
 
-export async function markTaskAsFinished(taskId: string): Promise<Task | null> {
+export async function markTaskAsArchived(taskId: string): Promise<Task | null> {
   const session = await getSession();
   if (!session) {
     throw new Error('Unauthorized');
   }
 
   return core.task.update(taskId, {
-    finished: true,
+    archived: true,
   });
 }

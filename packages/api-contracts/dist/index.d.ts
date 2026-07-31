@@ -177,7 +177,7 @@ interface UpdateTaskData {
     ownerId?: string;
     stateId?: string | null;
     order?: RelativeOrder;
-    finished?: boolean;
+    archived?: boolean;
 }
 interface ListTasksParams extends PaginationParams {
     projectId: string;

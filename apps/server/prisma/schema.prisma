@@ -68,7 +68,7 @@ model Task {
   content String @db.VarChar(1024)
   dueDate DateTime?
   rank String
-  finishedAt DateTime?
+  archivedAt DateTime?
   projectId String
   project Project @relation(fields: [projectId], references: [id])
   ownerId String

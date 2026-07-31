@@ -44,5 +44,5 @@ export class UpdateTaskDto {
 
   @IsOptional()
   @IsBoolean()
-  finished?: boolean;
+  archived?: boolean;
 }

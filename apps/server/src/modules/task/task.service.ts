@@ -135,7 +135,7 @@ export class TaskService {
         content: data.content,
         dueDate: data.dueDate,
         ownerId: data.ownerId,
-        ...(data.finished !== undefined && { finishedAt: data.finished ? new Date() : null }),
+        ...(data.archived !== undefined && { archivedAt: data.archived ? new Date() : null }),
         ...(data.stateId !== undefined && { stateId: data.stateId }),
         ...(rank !== undefined && { rank }),
       },
@@ -209,7 +209,7 @@ export class TaskService {
       include: {
         tasks: {
           orderBy: { rank: 'asc' },
-          where: { finishedAt: null },
+          where: { archivedAt: null },
         },
       },
     });

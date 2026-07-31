@@ -2,15 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Task } from "@sterenn/api-contracts";
-import { PlusIcon } from "lucide-react";
+import { ArchiveIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import {
   createTask,
-  markTaskAsFinished,
+  deleteTask,
+  markTaskAsArchived,
   updateTask,
 } from "@/actions/task.actions";
+import { ValidateActionDialog } from "@/components/dialogs/ValidateActionDialog";
 import { MembersSelector } from "@/components/membership/MembersSelector";
 import { Box } from "@/components/ui/Box";
 import { Button } from "@/components/ui/Button";
@@ -28,7 +30,6 @@ import {
   updateTaskFormSchema,
   type TaskFormValues,
 } from "@/validation/task.schemas";
-import { ValidateActionDialog } from "@/components/dialogs/ValidateActionDialog";
 
 const FORM_ID = "task-form";
 
@@ -171,27 +172,50 @@ export const TaskForm = createModalComponent(function TaskForm({
     }
   };
 
-  const handleMarkAsFinished = async () => {
+  const handleArchive = async () => {
     if (!task?.id) return;
 
     try {
-      const marked = await markTaskAsFinished(task.id);
-      if (!marked) {
+      const archived = await markTaskAsArchived(task.id);
+      if (!archived) {
         throw new Error("Task not found");
       }
-      removeTask(marked.id);
-      onSaved?.(marked);
+      removeTask(archived.id);
+      onSaved?.(archived);
       toast({
-        title: "Tâche marquée comme terminée",
-        description: `"${marked.title}" a bien été marquée comme terminée.`,
+        title: "Tâche archivée",
+        description: `"${archived.title}" a bien été archivée.`,
         variant: "success",
       });
       close();
     } catch (error) {
       console.error(error);
       toast({
-        title: "Marquage comme terminée échoué",
-        description: "Impossible de marquer la tâche comme terminée.",
+        title: "Archivage échoué",
+        description: "Impossible d’archiver la tâche.",
+        variant: "danger",
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!task?.id) return;
+
+    const title = task.title;
+    try {
+      await deleteTask(task.id);
+      removeTask(task.id);
+      toast({
+        title: "Tâche supprimée",
+        description: `"${title}" a bien été supprimée.`,
+        variant: "success",
+      });
+      close();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Suppression échouée",
+        description: "Impossible de supprimer la tâche.",
         variant: "danger",
       });
     }
@@ -217,20 +241,6 @@ export const TaskForm = createModalComponent(function TaskForm({
       }
       footer={
         <>
-          {task?.id ? (
-            <ValidateActionDialog
-              critical
-              criticalVariant="warning"
-              trigger={
-                <Button variant="success">Terminer</Button>
-              }
-              title="Êtes-vous sûr de vouloir marquer cette tâche comme terminée ?"
-              description="La tâche sera marquée comme terminée et ne sera plus visible dans la liste des tâches."
-              validateLabel="Marquer comme terminée"
-              cancelLabel="Annuler"
-              onValidate={handleMarkAsFinished}
-            />
-          ) : null}
           <Button type="button" variant="outline" onClick={close}>
             Annuler
           </Button>
@@ -314,6 +324,43 @@ export const TaskForm = createModalComponent(function TaskForm({
               )}
             />
           </FormField>
+        ) : null}
+        {task?.id ? (
+          <>
+            <Separator variant="light" label="Actions" />
+            <Box direction="column" gap={8}>
+              <ValidateActionDialog
+                critical
+                criticalVariant="warning"
+                trigger={
+                  <Button type="button" variant="warning" size="sm">
+                    <ArchiveIcon size={16} aria-hidden />
+                    <span>Archiver la tâche</span>
+                  </Button>
+                }
+                title="Êtes-vous sûr de vouloir archiver cette tâche ?"
+                description="La tâche sera archivée et ne sera plus visible dans la liste des tâches."
+                validateLabel="Archiver"
+                cancelLabel="Annuler"
+                onValidate={handleArchive}
+              />
+              <ValidateActionDialog
+                critical
+                criticalVariant="danger"
+                trigger={
+                  <Button type="button" variant="danger" size="sm">
+                    <TrashIcon size={16} aria-hidden />
+                    <span>Supprimer la tâche</span>
+                  </Button>
+                }
+                title="Êtes-vous sûr de vouloir supprimer cette tâche ?"
+                description="Cette action est irréversible. La tâche sera définitivement supprimée."
+                validateLabel="Supprimer"
+                cancelLabel="Annuler"
+                onValidate={handleDelete}
+              />
+            </Box>
+          </>
         ) : null}
       </Box>
     </Modal>
