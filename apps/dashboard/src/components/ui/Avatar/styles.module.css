@@ -15,6 +15,11 @@
   user-select: none;
 }
 
+.xs {
+  --avatar-size: 24px;
+  --avatar-font-size: 10px;
+}
+
 .sm {
   --avatar-size: 28px;
   --avatar-font-size: 11px;

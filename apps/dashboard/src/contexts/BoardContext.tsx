@@ -17,20 +17,28 @@ import {
   applyItemsOrder as applyItemsOrderToBoard,
   type BoardItems,
   insertState as insertStateIntoBoard,
+  patchTask as patchTaskIntoBoard,
   removeTask as removeTaskFromBoard,
   upsertState as upsertStateIntoBoard,
   upsertTask as upsertTaskIntoBoard,
 } from '@/utils/boardState';
 
+export type BoardFilters = {
+  ownerId?: string;
+  tags?: string[];
+};
+
 export type BoardContextType = {
   board: Board;
   setBoard: Dispatch<SetStateAction<Board>>;
+  filters: BoardFilters;
   upsertTask: (task: Task) => void;
+  patchTask: (taskId: string, patch: Partial<Task>) => void;
   removeTask: (taskId: string) => void;
   upsertState: (state: TaskState) => void;
   insertState: (state: TaskState) => void;
   applyItemsOrder: (items: BoardItems) => void;
-  refreshBoard: () => Promise<void>;
+  refreshBoard: (nextFilters?: BoardFilters) => Promise<void>;
 };
 
 export const BoardContext = createContext<BoardContextType | null>(null);
@@ -46,9 +54,14 @@ export function BoardProvider({
   projectId,
 }: BoardProviderProps) {
   const [board, setBoard] = useState(initialBoard);
+  const [filters, setFilters] = useState<BoardFilters>({});
 
   const upsertTask = useCallback((task: Task) => {
     setBoard((current) => upsertTaskIntoBoard(current, task));
+  }, []);
+
+  const patchTask = useCallback((taskId: string, patch: Partial<Task>) => {
+    setBoard((current) => patchTaskIntoBoard(current, taskId, patch));
   }, []);
 
   const removeTask = useCallback((taskId: string) => {
@@ -67,16 +80,28 @@ export function BoardProvider({
     setBoard((current) => applyItemsOrderToBoard(current, items));
   }, []);
 
-  const refreshBoard = useCallback(async () => {
-    const next = await getBoard(projectId);
-    setBoard(next);
-  }, [projectId]);
+  const refreshBoard = useCallback(
+    async (nextFilters?: BoardFilters) => {
+      const applied = nextFilters ?? filters;
+      if (nextFilters !== undefined) {
+        setFilters(nextFilters);
+      }
+      const next = await getBoard(projectId, {
+        ...(applied.ownerId ? { ownerId: applied.ownerId } : {}),
+        ...(applied.tags?.length ? { tags: applied.tags } : {}),
+      });
+      setBoard(next);
+    },
+    [filters, projectId],
+  );
 
   const value = useMemo(
     () => ({
       board,
       setBoard,
+      filters,
       upsertTask,
+      patchTask,
       removeTask,
       upsertState,
       insertState,
@@ -85,7 +110,9 @@ export function BoardProvider({
     }),
     [
       board,
+      filters,
       upsertTask,
+      patchTask,
       removeTask,
       upsertState,
       insertState,

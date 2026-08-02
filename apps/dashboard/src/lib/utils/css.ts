@@ -18,3 +18,9 @@ export function toTemplate(value: number | string | undefined): string | undefin
     if (typeof value === 'number') return `repeat(${value}, minmax(0, 1fr))`;
     return value;
 }
+
+export function getContrastedColor(color: string): string {
+    const rgb = color.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i)?.slice(1).map(c => parseInt(c, 16)) ?? [0, 0, 0];
+    const brightness = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+    return brightness > 128 ? '#000000' : '#FFFFFF';
+}

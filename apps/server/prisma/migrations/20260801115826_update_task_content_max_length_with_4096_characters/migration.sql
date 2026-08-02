@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Task" ALTER COLUMN "content" SET DATA TYPE VARCHAR(4096);

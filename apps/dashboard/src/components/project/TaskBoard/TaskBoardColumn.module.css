@@ -1,9 +1,11 @@
 .column {
+  --column-height: 100%;
+
   flex: 0 0 auto;
   width: 280px;
   min-width: 280px;
-  height: 100vh;
-  max-height: 100vh;
+  height: var(--column-height);
+  max-height: var(--column-height);
   overflow: hidden;
   border-radius: 12px;
   background: var(--color-background-muted);

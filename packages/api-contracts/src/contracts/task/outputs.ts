@@ -1,3 +1,14 @@
+import type { EventData } from "../common/outputs.js";
+import type { Tag } from "../tag/outputs.js";
+
+export type TaskTag = Tag;
+
+export type TaskOwner = {
+  id: string;
+  firstName: string;
+  lastName: string;
+};
+
 export type Task = {
   id: string;
   title: string;
@@ -7,6 +18,8 @@ export type Task = {
   projectId: string;
   ownerId: string;
   stateId: string | null;
+  tags: TaskTag[];
+  owner: TaskOwner;
 };
 
 export type BoardState = {
@@ -22,3 +35,7 @@ export type Board = {
   projectId: string;
   states: BoardState[];
 };
+
+export type TaskExportEventData = EventData<{
+  ressourceUrl: string | null;
+}>;

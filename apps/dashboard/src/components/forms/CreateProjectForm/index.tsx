@@ -18,6 +18,7 @@ import {
 import { TextInput } from '@/components/ui/TextInput';
 import { useToast } from '@/components/ui/Toast';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useActionFeedback } from '@/hooks/useActionFeedback';
 import { sluggify } from '@/lib/utils/string';
 import {
   createProjectFormSchema,
@@ -38,6 +39,7 @@ export const CreateProjectForm = createModalComponent(
   }: CreateProjectFormProps) {
     const { close } = useModal();
     const { toast } = useToast();
+    const { run } = useActionFeedback();
     const { currentWorkspace } = useWorkspace();
     const workspaceId = currentWorkspace?.id;
 
@@ -69,31 +71,28 @@ export const CreateProjectForm = createModalComponent(
         return;
       }
 
-      try {
-        const project = await createProject({
-          name: data.name,
-          slug: sluggify(data.name),
-          workspaceId,
-        });
-        onCreated?.(project);
-        toast({
-          title: 'Projet créé',
-          description: `${project.name} a bien été créé.`,
-          variant: 'success',
-        });
-        reset({
-          name: '',
-          workspaceId,
-        });
-        close();
-      } catch (error) {
-        console.error(error);
-        toast({
-          title: 'Création échouée',
-          description: 'Impossible de créer le projet.',
-          variant: 'danger',
-        });
-      }
+      const project = await run(
+        () =>
+          createProject({
+            name: data.name,
+            slug: sluggify(data.name),
+            workspaceId,
+          }),
+        {
+          successTitle: 'Projet créé',
+          successDescription: `${data.name} a bien été créé.`,
+          errorTitle: 'Création échouée',
+          errorDescription: 'Impossible de créer le projet.',
+        },
+      );
+      if (!project) return;
+
+      onCreated?.(project);
+      reset({
+        name: '',
+        workspaceId,
+      });
+      close();
     };
 
     return (

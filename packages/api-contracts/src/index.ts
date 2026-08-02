@@ -6,3 +6,4 @@ export * from './contracts/project/index.js';
 export * from './contracts/membership/index.js';
 export * from './contracts/task-state/index.js';
 export * from './contracts/task/index.js';
+export * from './contracts/tag/index.js';

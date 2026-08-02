@@ -1,0 +1,42 @@
+.badge {
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.badge:hover .remove,
+.badge:focus-within .remove {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.remove {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  color: inherit;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: opacity 140ms ease;
+}
+
+.remove:hover:not(:disabled),
+.remove:focus-visible:not(:disabled) {
+  opacity: 1;
+}
+
+.remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

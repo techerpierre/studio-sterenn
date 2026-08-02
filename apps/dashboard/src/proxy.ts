@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
 
-import core from '@/config/core';
+import { refreshToken as refreshAuthToken } from '@/actions/auth.actions';
 import env from '@/config/env';
 
 const TOKEN_EXPIRY_SKEW_MS = 30_000;
@@ -29,16 +29,20 @@ function redirectToSignIn(request: NextRequest) {
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const publicPaths = ['/', '/sign-in', '/sign-up', '/validate-2fa'];
-  const isPublicPath = publicPaths.some((p) => path === p || path.startsWith(`${p}/`));
+  const isPublicPath = publicPaths.some(
+    (p) => path === p || path.startsWith(`${p}/`),
+  );
 
   if (isPublicPath) {
     return NextResponse.next();
   }
 
   const accessToken = request.cookies.get(env.API_TOKEN_STORED_KEY)?.value;
-  const refreshToken = request.cookies.get(env.API_REFRESH_TOKEN_STORED_KEY)?.value;
+  const refreshTokenValue = request.cookies.get(
+    env.API_REFRESH_TOKEN_STORED_KEY,
+  )?.value;
 
-  if (!accessToken || !refreshToken) {
+  if (!accessToken || !refreshTokenValue) {
     return redirectToSignIn(request);
   }
 
@@ -47,11 +51,11 @@ export async function proxy(request: NextRequest) {
   }
 
   try {
-    const session = await core.auth.refreshToken({ refreshToken });
+    const session = await refreshAuthToken({ refreshToken: refreshTokenValue });
 
     const response = NextResponse.next();
     response.cookies.set(env.API_TOKEN_STORED_KEY, session.token);
-    response.cookies.set(env.API_REFRESH_TOKEN_STORED_KEY, refreshToken);
+    response.cookies.set(env.API_REFRESH_TOKEN_STORED_KEY, refreshTokenValue);
     return response;
   } catch {
     const response = redirectToSignIn(request);

@@ -7,7 +7,7 @@ import { UserIcon } from 'lucide-react';
 
 import styles from './styles.module.css';
 
-export type AvatarSize = 'sm' | 'md' | 'lg';
+export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type AvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
   src?: string | null;
@@ -57,6 +57,7 @@ export function Avatar({
 }
 
 const ICON_SIZE: Record<AvatarSize, number> = {
+  xs: 10,
   sm: 14,
   md: 18,
   lg: 22,

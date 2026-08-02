@@ -1,5 +1,5 @@
 import env from "@/config/env";
-import { Session, Workspace, WorkspaceWithMembership } from "@sterenn/api-contracts";
+import { Session, WorkspaceWithMembership } from "@sterenn/api-contracts";
 import { cookies } from "next/headers";
 
 /**
@@ -9,7 +9,12 @@ import { cookies } from "next/headers";
 export async function persistSession(session: Session): Promise<void> {
     const cookieStore = await cookies();
     cookieStore.set(env.API_TOKEN_STORED_KEY, session.token);
-    cookieStore.set(env.API_REFRESH_TOKEN_STORED_KEY, session.refreshToken);
+    cookieStore.set(env.API_REFRESH_TOKEN_STORED_KEY, session.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 31_536_000, // 1 year
+        path: "/",
+    });
 }
 
 /**

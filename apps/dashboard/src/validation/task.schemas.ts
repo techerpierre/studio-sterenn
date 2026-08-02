@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const taskContentSchema = z
   .string()
-  .max(1024, 'La description ne peut pas dépasser 1024 caractères');
+  .max(4096, 'La description ne peut pas dépasser 4096 caractères');
 
 const dueDateSchema = z.string().optional();
 const ownerIdSchema = z.string().optional();

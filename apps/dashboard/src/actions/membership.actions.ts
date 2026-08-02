@@ -1,27 +1,28 @@
-"use server";
+'use server';
 
-import core from "@/config/core";
-import { getSession } from "@/lib/session-persistence";
+import { requireSession } from '@/actions/auth.actions';
+import httpClient from '@/config/httpClient';
 import {
   ListMembersParams,
   Member,
   Paginated,
-} from "@sterenn/api-contracts";
+} from '@sterenn/api-contracts';
 
 export async function listMembers(
   params: ListMembersParams,
 ): Promise<Paginated<Member>> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
+  await requireSession();
+
   if (!params.workspaceId) {
-    throw new Error("workspaceId is required");
+    throw new Error('workspaceId is required');
   }
 
-  return core.membership.list({
-    workspaceId: params.workspaceId,
-    page: params.page ?? 0,
-    take: params.take ?? 20,
+  const { workspaceId, ...pagination } = params;
+
+  return httpClient.get(`/workspaces/${workspaceId}/members`, {
+    params: {
+      page: pagination.page ?? 0,
+      take: pagination.take ?? 20,
+    },
   });
 }

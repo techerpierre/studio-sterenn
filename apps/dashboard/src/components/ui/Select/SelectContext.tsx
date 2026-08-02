@@ -8,6 +8,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -52,6 +53,8 @@ export function SelectProvider({
   const isSearchable = Boolean(searchable || onSearch);
   const filterItems = isSearchable && !onSearch;
   const value = isControlled ? valueProp : uncontrolledValue;
+  const valueRef = useRef(value);
+  valueRef.current = value;
 
   useEffect(() => {
     if (!popup.open) {
@@ -88,6 +91,8 @@ export function SelectProvider({
   const unregisterOption = useCallback((optionValue: string) => {
     setLabels((current) => {
       if (!(optionValue in current)) return current;
+      // Keep the selected label so the trigger still shows it when the menu unmounts.
+      if (optionValue === valueRef.current) return current;
       const next = { ...current };
       delete next[optionValue];
       return next;

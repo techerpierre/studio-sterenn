@@ -1,24 +1,15 @@
 import { ReactNode } from 'react';
 
+import { createEmptyGate } from '@/components/logics';
 import { Text } from '@/components/ui/Text';
 
 import styles from './TaskBoardEmpty.module.css';
 
-export type TaskBoardEmptyProps = {
-  isEmpty: boolean;
-  children: ReactNode;
+export type TaskBoardEmptyViewProps = {
   action?: ReactNode;
 };
 
-export function TaskBoardEmpty({
-  isEmpty,
-  children,
-  action,
-}: TaskBoardEmptyProps) {
-  if (!isEmpty) {
-    return children;
-  }
-
+function TaskBoardEmptyView({ action }: TaskBoardEmptyViewProps) {
   return (
     <div className={styles.empty}>
       <Text.BodySmall>
@@ -28,3 +19,5 @@ export function TaskBoardEmpty({
     </div>
   );
 }
+
+export const TaskBoardEmpty = createEmptyGate(TaskBoardEmptyView);

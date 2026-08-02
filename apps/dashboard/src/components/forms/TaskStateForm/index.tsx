@@ -10,8 +10,10 @@ import {
   createTaskState,
   updateTaskState,
 } from '@/actions/task-state.actions';
+import { Choose } from '@/components/logics';
 import { Box } from '@/components/ui/Box';
 import { Button } from '@/components/ui/Button';
+import { ColorInput } from '@/components/ui/ColorInput';
 import { FormField } from '@/components/ui/FormField';
 import {
   createModalComponent,
@@ -19,8 +21,8 @@ import {
   useModal,
 } from '@/components/ui/Modal';
 import { TextInput } from '@/components/ui/TextInput';
-import { useToast } from '@/components/ui/Toast';
 import { useBoard } from '@/contexts/BoardContext';
+import { useActionFeedback } from '@/hooks/useActionFeedback';
 import {
   createTaskStateFormSchema,
   CreateTaskStateFormSchema,
@@ -49,7 +51,7 @@ export const TaskStateForm = createModalComponent(function TaskStateForm({
   onSaved,
 }: TaskStateFormProps) {
   const { close } = useModal();
-  const { toast } = useToast();
+  const { run } = useActionFeedback();
   const { insertState, upsertState } = useBoard();
   const isEdit = Boolean(state);
 
@@ -78,54 +80,63 @@ export const TaskStateForm = createModalComponent(function TaskStateForm({
   const onSubmit = async (
     data: CreateTaskStateFormSchema | UpdateTaskStateFormSchema,
   ) => {
-    try {
-      if (isEdit && state) {
-        const updated = await updateTaskState(state.id, {
-          name: data.name,
-          color: data.color,
-        });
-        if (!updated) {
-          throw new Error('State not found');
-        }
-        upsertState(updated);
-        onSaved?.(updated);
-        toast({
-          title: 'Colonne mise à jour',
-          description: `"${updated.name}" a bien été enregistrée.`,
-          variant: 'success',
-        });
-      } else {
-        const created = await createTaskState(projectId, {
+    if (isEdit && state) {
+      const updated = await run(
+        async () => {
+          const result = await updateTaskState(state.id, {
+            name: data.name,
+            color: data.color,
+          });
+          if (!result) {
+            throw new Error('State not found');
+          }
+          return result;
+        },
+        {
+          successTitle: 'Colonne mise à jour',
+          successDescription: `"${data.name}" a bien été enregistrée.`,
+          errorTitle: 'Mise à jour échouée',
+          errorDescription: 'Impossible de mettre à jour la colonne.',
+        },
+      );
+      if (!updated) return;
+      upsertState(updated);
+      onSaved?.(updated);
+      close();
+      return;
+    }
+
+    const created = await run(
+      () =>
+        createTaskState(projectId, {
           name: data.name,
           color: data.color,
           ...(beforeId ? { beforeId } : {}),
           ...(afterId ? { afterId } : {}),
-        });
-        insertState(created);
-        onSaved?.(created);
-        toast({
-          title: 'Colonne créée',
-          description: `"${created.name}" a bien été créée.`,
-          variant: 'success',
-        });
-        reset({ name: '', color: DEFAULT_COLOR });
-      }
-      close();
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: isEdit ? 'Mise à jour échouée' : 'Création échouée',
-        description: isEdit
-          ? 'Impossible de mettre à jour la colonne.'
-          : 'Impossible de créer la colonne.',
-        variant: 'danger',
-      });
-    }
+        }),
+      {
+        successTitle: 'Colonne créée',
+        successDescription: `"${data.name}" a bien été créée.`,
+        errorTitle: 'Création échouée',
+        errorDescription: 'Impossible de créer la colonne.',
+      },
+    );
+    if (!created) return;
+    insertState(created);
+    onSaved?.(created);
+    reset({ name: '', color: DEFAULT_COLOR });
+    close();
   };
 
   return (
     <Modal
-      title={isEdit ? 'Modifier la colonne' : 'Nouvelle colonne'}
+      title={
+        <Choose
+          when={isEdit}
+          then="Modifier la colonne"
+          otherwise="Nouvelle colonne"
+        />
+      }
       size="sm"
       fill={false}
       trigger={
@@ -142,7 +153,7 @@ export const TaskStateForm = createModalComponent(function TaskStateForm({
             Annuler
           </Button>
           <Button type="submit" form={FORM_ID} loading={isSubmitting}>
-            {isEdit ? 'Enregistrer' : 'Créer'}
+            <Choose when={isEdit} then="Enregistrer" otherwise="Créer" />
           </Button>
         </>
       }
@@ -165,9 +176,9 @@ export const TaskStateForm = createModalComponent(function TaskStateForm({
           />
         </FormField>
         <FormField label="Couleur" error={errors.color?.message}>
-          <TextInput
-            type="color"
+          <ColorInput
             disabled={isSubmitting}
+            defaultValue={state?.color ?? DEFAULT_COLOR}
             {...register('color')}
           />
         </FormField>

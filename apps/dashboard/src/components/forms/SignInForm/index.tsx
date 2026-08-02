@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { Text } from "@/components/ui/Text";
 import { TextInput } from "@/components/ui/TextInput";
+import { useActionFeedback } from "@/hooks/useActionFeedback";
 import { SignInSchema, signInSchema } from "@/validation/auth.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/components/ui/Toast";
 
 export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
+  const { run } = useActionFeedback();
 
   const {
     register,
@@ -26,20 +26,22 @@ export function SignInForm() {
   });
 
   const onSubmit = async (data: SignInSchema) => {
-    try {
-      await signIn(data);
-      const nextUrl = new URL("/validate-2fa", window.location.origin);
-      const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
-      nextUrl.searchParams.set("callbackUrl", callbackUrl);
-      router.push(nextUrl.toString());
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Connexion échouée",
-        description: "Email ou mot de passe incorrect",
-        variant: "danger",
-      });
-    }
+    const ok = await run(
+      async () => {
+        await signIn(data);
+        return true;
+      },
+      {
+        errorTitle: "Connexion échouée",
+        errorDescription: "Email ou mot de passe incorrect",
+      },
+    );
+    if (!ok) return;
+
+    const nextUrl = new URL("/validate-2fa", window.location.origin);
+    const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+    nextUrl.searchParams.set("callbackUrl", callbackUrl);
+    router.push(nextUrl.toString());
   };
 
   return (

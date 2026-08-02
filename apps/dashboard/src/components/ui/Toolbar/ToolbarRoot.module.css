@@ -11,6 +11,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--toolbar-gap);
+  max-width: 100%;
+  min-width: 0;
   min-height: var(--toolbar-height);
   padding: var(--toolbar-padding);
   border: 1px solid var(--toolbar-border);
@@ -18,13 +20,19 @@
   background: var(--toolbar-bg);
   box-shadow: var(--toolbar-shadow);
   color: var(--color-foreground);
+  box-sizing: border-box;
 }
 
 .cluster {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--toolbar-gap);
+  flex: 1 1 auto;
   min-width: 0;
+}
+
+.cluster > *:not(.extra) {
+  flex-shrink: 0;
 }
 
 .clusterEnd {
@@ -34,6 +42,8 @@
 .extra {
   display: grid;
   grid-template-columns: 0fr;
+  flex: 0 1 auto;
+  min-width: 0;
   opacity: 0;
   transition:
     grid-template-columns var(--toolbar-expand-ms)
@@ -44,6 +54,7 @@
 
 .extraOpen {
   grid-template-columns: 1fr;
+  flex: 1 1 auto;
   opacity: 1;
 }
 
@@ -53,6 +64,24 @@
   gap: var(--toolbar-gap);
   min-width: 0;
   overflow: hidden;
+}
+
+.extraInner > * {
+  flex-shrink: 0;
+}
+
+.extraOpen .extraInner {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.extraOpen .extraInner::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .fromStart {

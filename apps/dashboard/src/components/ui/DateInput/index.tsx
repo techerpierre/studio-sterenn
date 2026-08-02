@@ -18,6 +18,7 @@ import {
   getPopupTriggerAria,
   useAnchoredFloating,
 } from '@/lib/popup';
+import { assignRef } from '@/lib/utils';
 import {
   Calendar,
   type CalendarMode,
@@ -230,15 +231,6 @@ export function DateInput({
 }
 
 const EMPTY_RANGE: CalendarRange = { from: null, to: null };
-
-function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
-  if (!ref) return;
-  if (typeof ref === 'function') {
-    ref(value);
-    return;
-  }
-  ref.current = value;
-}
 
 function parseValue(value: string | undefined): Date | null {
   if (!value) return null;

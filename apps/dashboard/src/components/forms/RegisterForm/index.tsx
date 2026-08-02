@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { Text } from "@/components/ui/Text";
 import { TextInput } from "@/components/ui/TextInput";
-import { useToast } from "@/components/ui/Toast";
+import { useActionFeedback } from "@/hooks/useActionFeedback";
 import { RegisterSchema, registerSchema } from "@/validation/auth.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 export function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
+  const { run } = useActionFeedback();
 
   const {
     register: registerField,
@@ -26,20 +26,22 @@ export function RegisterForm() {
   });
 
   const onSubmit = async (data: RegisterSchema) => {
-    try {
-      await register(data);
-      const nextUrl = new URL("/validate-2fa", window.location.origin);
-      const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
-      nextUrl.searchParams.set("callbackUrl", callbackUrl);
-      router.push(nextUrl.toString());
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Inscription échouée",
-        description: "Impossible de créer le compte. Réessayez.",
-        variant: "danger",
-      });
-    }
+    const ok = await run(
+      async () => {
+        await register(data);
+        return true;
+      },
+      {
+        errorTitle: "Inscription échouée",
+        errorDescription: "Impossible de créer le compte. Réessayez.",
+      },
+    );
+    if (!ok) return;
+
+    const nextUrl = new URL("/validate-2fa", window.location.origin);
+    const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+    nextUrl.searchParams.set("callbackUrl", callbackUrl);
+    router.push(nextUrl.toString());
   };
 
   return (
@@ -133,4 +135,3 @@ export function RegisterForm() {
     </Box>
   );
 }
-

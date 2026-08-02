@@ -5,6 +5,7 @@ import { BullModule } from '@nestjs/bullmq';
 import env from './config/env';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { ProjectModule } from './modules/project/project.module';
+import { TagModule } from './modules/tag/tag.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ProjectModule } from './modules/project/project.module';
     AuthModule,
     WorkspaceModule,
     ProjectModule,
+    TagModule,
     BullModule.forRoot({
       connection: {
         host: env.REDIS_HOST,

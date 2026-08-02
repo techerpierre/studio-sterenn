@@ -1,0 +1,13 @@
+.hint {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 4px;
+  color: var(--color-foreground-muted);
+  font-size: 0.875rem;
+}
+
+.message {
+  margin: 0;
+  text-align: center;
+}

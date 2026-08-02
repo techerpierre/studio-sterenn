@@ -3,6 +3,15 @@ import {
   RelativeOrder,
   SessionUserParam,
 } from '../common/common.types';
+import { Tag } from '../tag/tag.types';
+
+export type TaskTag = Tag;
+
+type TaskOwner = {
+  id: string;
+  firstName: string;
+  lastName: string;
+}
 
 export type Task = {
   id: string;
@@ -13,6 +22,8 @@ export type Task = {
   projectId: string;
   ownerId: string;
   stateId: string | null;
+  tags: TaskTag[];
+  owner: TaskOwner;
 };
 
 export type CreateTaskData = {
@@ -66,4 +77,33 @@ export type Board = {
 
 export type GetBoardParams = SessionUserParam & {
   projectId: string;
+  ownerId?: string;
+  tags?: string[];
+};
+
+export enum TaskExportType {
+  MARKDOWN = 'markdown',
+  JSON = 'json',
+}
+
+export type TaskExportParams = {
+  userId?: string;
+  projectId: string;
+  type: TaskExportType;
+};
+
+export type TaskExportResult = {
+  ressourceUrl: string;
+};
+
+export enum TaskExportEventStatus {
+  Processing = 'processing',
+  Completed = 'completed',
+  Failed = 'failed',
+}
+
+export type TaskExportSseEvent = {
+  status: TaskExportEventStatus;
+  ressourceUrl: string | null;
+  message?: string;
 };

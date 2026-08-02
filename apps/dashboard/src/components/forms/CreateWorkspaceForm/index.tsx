@@ -14,8 +14,8 @@ import {
   useModal,
 } from '@/components/ui/Modal';
 import { TextInput } from '@/components/ui/TextInput';
-import { useToast } from '@/components/ui/Toast';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useActionFeedback } from '@/hooks/useActionFeedback';
 import {
   createWorkspaceSchema,
   CreateWorkspaceSchema,
@@ -32,7 +32,7 @@ export type CreateWorkspaceFormProps = {
 export const CreateWorkspaceForm = createModalComponent(
   function CreateWorkspaceForm({ className }: CreateWorkspaceFormProps) {
     const { close } = useModal();
-    const { toast } = useToast();
+    const { run } = useActionFeedback();
     const { addWorkspace } = useWorkspace();
 
     const {
@@ -44,23 +44,15 @@ export const CreateWorkspaceForm = createModalComponent(
     });
 
     const onSubmit = async (data: CreateWorkspaceSchema) => {
-      try {
-        const workspace = await createWorkspace(data);
-        addWorkspace(workspace);
-        toast({
-          title: 'Workspace créé',
-          description: `${workspace.name} a bien été créé.`,
-          variant: 'success',
-        });
-        close();
-      } catch (error) {
-        console.error(error);
-        toast({
-          title: 'Création échouée',
-          description: 'Impossible de créer le workspace.',
-          variant: 'danger',
-        });
-      }
+      const workspace = await run(() => createWorkspace(data), {
+        successTitle: 'Workspace créé',
+        successDescription: `${data.name} a bien été créé.`,
+        errorTitle: 'Création échouée',
+        errorDescription: 'Impossible de créer le workspace.',
+      });
+      if (!workspace) return;
+      addWorkspace(workspace);
+      close();
     };
 
     return (

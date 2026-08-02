@@ -11,8 +11,8 @@ import * as Contracts from '@sterenn/api-contracts';
 
 import { SessionUser } from '../../auth/auth.decorators';
 import { AuthGuard } from '../../auth/auth.guard';
+import { toTaskContract } from '../../task/task.mapper';
 import { TaskService } from '../../task/task.service';
-import type { Task } from '../../task/task.types';
 import type { User } from '../../user/user.types';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { ListTasksQueryDto } from '../dto/list-tasks-query.dto';
@@ -35,7 +35,7 @@ export class ProjectTasksController {
     });
 
     return {
-      results: result.results.map((task) => this.toContract(task)),
+      results: result.results.map((task) => toTaskContract(task)),
       count: result.count,
     };
   }
@@ -55,19 +55,6 @@ export class ProjectTasksController {
       { sessionUserId: sessionUser.id },
     );
 
-    return this.toContract(task);
-  }
-
-  private toContract(task: Task): Contracts.Task {
-    return {
-      id: task.id,
-      title: task.title,
-      content: task.content,
-      dueDate: task.dueDate ? task.dueDate.toISOString() : null,
-      position: task.position,
-      projectId: task.projectId,
-      ownerId: task.ownerId,
-      stateId: task.stateId,
-    };
+    return toTaskContract(task);
   }
 }

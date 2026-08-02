@@ -10,7 +10,7 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsString()
-  @Length(0, 1024)
+  @Length(0, 4096)
   content?: string;
 
   @IsOptional()

@@ -9,10 +9,9 @@ import { Box } from "@/components/ui/Box";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { TextInput } from "@/components/ui/TextInput";
-import { Text } from "@/components/ui/Text";
-import { useToast } from "@/components/ui/Toast";
 import { useProject } from "@/contexts/ProjectContext";
 import { useProjectList } from "@/contexts/ProjectListContext";
+import { useActionFeedback } from "@/hooks/useActionFeedback";
 import { sluggify } from "@/lib/utils/string";
 import {
   updateProjectFormSchema,
@@ -24,14 +23,15 @@ import styles from "./styles.module.css";
 export function EditProjectForm() {
   const { project, setProject } = useProject();
   const { patchProject } = useProjectList();
-  const { toast } = useToast();
+  const { run } = useActionFeedback();
 
   const {
     register,
     handleSubmit,
     reset,
     setValue,
-    formState: { errors, isSubmitting, isDirty },
+    watch,
+    formState: { errors, isSubmitting },
   } = useForm<UpdateProjectFormSchema>({
     resolver: zodResolver(updateProjectFormSchema),
     defaultValues: {
@@ -40,12 +40,17 @@ export function EditProjectForm() {
     },
   });
 
+  const name = watch("name");
+  const slug = watch("slug");
+  const isDirty = name !== project.name || slug !== project.slug;
+
+  // Sync only when switching project — reset on name/slug would clear dirty while typing.
   useEffect(() => {
     reset({
       name: project.name,
       slug: project.slug,
     });
-  }, [project.id, project.name, project.slug, reset]);
+  }, [project.id, reset]);
 
   const onSlugBlur = (event: FocusEvent<HTMLInputElement>) => {
     const next = sluggify(event.target.value);
@@ -55,37 +60,34 @@ export function EditProjectForm() {
   };
 
   const onSubmit = async (data: UpdateProjectFormSchema) => {
-    const slug = sluggify(data.slug);
+    const nextSlug = sluggify(data.slug);
 
-    try {
-      const updated = await updateProject(project.id, {
-        name: data.name.trim(),
-        slug,
-      });
+    const updated = await run(
+      async () => {
+        const result = await updateProject(project.id, {
+          name: data.name.trim(),
+          slug: nextSlug,
+        });
+        if (!result) {
+          throw new Error("Project not found");
+        }
+        return result;
+      },
+      {
+        successTitle: "Projet mis à jour",
+        successDescription: `« ${data.name.trim()} » a bien été enregistré.`,
+        errorTitle: "Mise à jour échouée",
+        errorDescription: "Impossible de mettre à jour le projet.",
+      },
+    );
+    if (!updated) return;
 
-      if (!updated) {
-        throw new Error("Project not found");
-      }
-
-      setProject(updated);
-      patchProject(updated);
-      reset({
-        name: updated.name,
-        slug: updated.slug,
-      });
-      toast({
-        title: "Projet mis à jour",
-        description: `« ${updated.name} » a bien été enregistré.`,
-        variant: "success",
-      });
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Mise à jour échouée",
-        description: "Impossible de mettre à jour le projet.",
-        variant: "danger",
-      });
-    }
+    setProject(updated);
+    patchProject(updated);
+    reset({
+      name: updated.name,
+      slug: updated.slug,
+    });
   };
 
   return (

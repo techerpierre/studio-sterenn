@@ -3,6 +3,10 @@
 import type { ChainedCommands, Editor } from '@tiptap/react';
 import { useEditorState } from '@tiptap/react';
 import {
+  BetweenHorizonalEndIcon,
+  BetweenHorizonalStartIcon,
+  BetweenVerticalEndIcon,
+  BetweenVerticalStartIcon,
   BoldIcon,
   CodeIcon,
   FileCodeIcon,
@@ -15,11 +19,14 @@ import {
   QuoteIcon,
   Redo2Icon,
   StrikethroughIcon,
+  Table2Icon,
+  Trash2Icon,
   Undo2Icon,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 
 import { Toolbar } from '@/components/ui/Toolbar';
+import { When } from '@/components/logics';
 import clsx from '@/lib/clsx';
 
 import styles from './styles.module.css';
@@ -53,6 +60,12 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
       orderedList: ctx.editor.isActive('orderedList'),
       taskList: ctx.editor.isActive('taskList'),
       blockquote: ctx.editor.isActive('blockquote'),
+      table: ctx.editor.isActive('table'),
+      canAddColumnAfter: ctx.editor.can().addColumnAfter(),
+      canAddRowAfter: ctx.editor.can().addRowAfter(),
+      canDeleteColumn: ctx.editor.can().deleteColumn(),
+      canDeleteRow: ctx.editor.can().deleteRow(),
+      canDeleteTable: ctx.editor.can().deleteTable(),
       canUndo: ctx.editor.can().undo(),
       canRedo: ctx.editor.can().redo(),
     }),
@@ -95,7 +108,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
       <Toolbar
         className={styles.toolbar}
         expandFrom="end"
-        visibleCount={2}
+        visibleCount={3}
         expanded={expanded}
         onExpandedChange={setExpanded}
       >
@@ -176,6 +189,54 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         >
           <QuoteIcon size={16} aria-hidden />
         </Toolbar.Item>
+        <Toolbar.Item
+          aria-label="Insérer un tableau"
+          active={editorState.table}
+          onClick={() =>
+            run((chain) =>
+              chain.insertTable({ rows: 3, cols: 3, withHeaderRow: true }),
+            )
+          }
+        >
+          <Table2Icon size={16} aria-hidden />
+        </Toolbar.Item>
+        <When condition={editorState.table}>
+          <Toolbar.Item
+            aria-label="Ajouter une colonne"
+            disabled={!editorState.canAddColumnAfter}
+            onClick={() => run((chain) => chain.addColumnAfter())}
+          >
+            <BetweenVerticalEndIcon size={16} aria-hidden />
+          </Toolbar.Item>
+          <Toolbar.Item
+            aria-label="Supprimer une colonne"
+            disabled={!editorState.canDeleteColumn}
+            onClick={() => run((chain) => chain.deleteColumn())}
+          >
+            <BetweenVerticalStartIcon size={16} aria-hidden />
+          </Toolbar.Item>
+          <Toolbar.Item
+            aria-label="Ajouter une ligne"
+            disabled={!editorState.canAddRowAfter}
+            onClick={() => run((chain) => chain.addRowAfter())}
+          >
+            <BetweenHorizonalEndIcon size={16} aria-hidden />
+          </Toolbar.Item>
+          <Toolbar.Item
+            aria-label="Supprimer une ligne"
+            disabled={!editorState.canDeleteRow}
+            onClick={() => run((chain) => chain.deleteRow())}
+          >
+            <BetweenHorizonalStartIcon size={16} aria-hidden />
+          </Toolbar.Item>
+          <Toolbar.Item
+            aria-label="Supprimer le tableau"
+            disabled={!editorState.canDeleteTable}
+            onClick={() => run((chain) => chain.deleteTable())}
+          >
+            <Trash2Icon size={16} aria-hidden />
+          </Toolbar.Item>
+        </When>
         <Toolbar.Item
           aria-label="Annuler"
           disabled={!editorState.canUndo}

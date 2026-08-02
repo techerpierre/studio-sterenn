@@ -5,6 +5,15 @@
   vertical-align: top;
 }
 
+.optionsRegistrar {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+
 .customTrigger {
   appearance: none;
   display: inline-flex;
@@ -81,7 +90,7 @@ button.variant-secondary:focus-visible,
 .menu {
   /* Must live on .menu (portaled), not .root — custom props don't cross portals. */
   --select-menu-max-height: 240px;
-  --select-menu-width: 160px;
+  --select-menu-width: 220px;
 
   display: flex;
   flex-direction: column;
@@ -139,6 +148,5 @@ button.variant-secondary:focus-visible,
 
 .menuAutoWidth {
   width: var(--select-menu-width);
-  min-width: max(100%, var(--select-menu-width));
-  max-width: none;
+  min-width: var(--select-menu-width);
 }

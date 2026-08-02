@@ -2,19 +2,13 @@
 
 import { Member, User } from '@sterenn/api-contracts';
 import { UserPlusIcon } from 'lucide-react';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { listMembers } from '@/actions/membership.actions';
 import { getUser } from '@/actions/user.actions';
 import { Avatar } from '@/components/ui/Avatar';
 import { Select } from '@/components/ui/Select';
+import { usePagedQuery } from '@/hooks/usePagedQuery';
 import clsx from '@/lib/clsx';
 
 import styles from './styles.module.css';
@@ -47,40 +41,23 @@ export function MembersSelector({
   disabled = false,
   className,
 }: MembersSelectorProps) {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
   const [selected, setSelected] = useState<User | null>(null);
-  const pageRef = useRef(0);
-  const [isPending, startTransition] = useTransition();
 
-  const loadPage = useCallback(
-    async (page: number, append: boolean) => {
-      const result = await listMembers({
-        workspaceId,
+  const params = useMemo(() => ({ workspaceId }), [workspaceId]);
+
+  const { items: members, isLoading, hasMore, loadMore } = usePagedQuery<
+    Member,
+    { workspaceId: string }
+  >({
+    pageSize: PAGE_SIZE,
+    params,
+    fetchPage: ({ page, take, params: query }) =>
+      listMembers({
+        workspaceId: query.workspaceId,
         page,
-        take: PAGE_SIZE,
-      });
-      setTotalCount(result.count);
-      setMembers((current) =>
-        append
-          ? [
-              ...current,
-              ...result.results.filter(
-                (member) => !current.some((item) => item.id === member.id)
-              ),
-            ]
-          : result.results
-      );
-      pageRef.current = page;
-    },
-    [workspaceId]
-  );
-
-  useEffect(() => {
-    startTransition(() => {
-      void loadPage(0, false);
-    });
-  }, [loadPage]);
+        take,
+      }),
+  });
 
   useEffect(() => {
     if (!value) {
@@ -106,11 +83,8 @@ export function MembersSelector({
   }, [value, members]);
 
   const handleBottom = () => {
-    if (isPending) return;
-    if (members.length >= totalCount) return;
-    startTransition(() => {
-      void loadPage(pageRef.current + 1, true);
-    });
+    if (isLoading || !hasMore) return;
+    loadMore();
   };
 
   const selectedName = selected ? displayName(selected) : '';

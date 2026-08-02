@@ -1,0 +1,30 @@
+.list {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+}
+
+.list:hover .addTag,
+.list:focus-within .addTag {
+  opacity: 1;
+}
+
+.addTag {
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.hiddenTrigger {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

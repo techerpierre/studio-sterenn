@@ -14,6 +14,7 @@ import {
 } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
+import { assignRef } from "@/lib/utils";
 import styles from "./styles.module.css";
 import textStyles from "../Text/styles.module.css";
 import { Loader } from "../Loader";
@@ -161,11 +162,11 @@ export function TextInput({
         />
       ) : (
         <input
+          {...props}
           ref={ref as Ref<HTMLInputElement>}
           type={inputType}
           className={fieldClassName}
           disabled={isDisabled}
-          {...props}
         />
       )}
       {resolvedRightItem ? (
@@ -180,15 +181,6 @@ const ICON_SIZE: Record<TextInputSize, number> = {
   md: 16,
   lg: 18,
 };
-
-function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
-  if (!ref) return;
-  if (typeof ref === "function") {
-    ref(value);
-    return;
-  }
-  ref.current = value;
-}
 
 function autosizeTextarea(element: HTMLTextAreaElement) {
   element.style.height = "0px";

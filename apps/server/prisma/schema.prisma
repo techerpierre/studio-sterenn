@@ -48,6 +48,7 @@ model Project {
   workspace Workspace @relation(fields: [workspaceId], references: [id])
   tasks Task[]
   states TaskState[]
+  tags Tag[]
 }
 
 model TaskState {
@@ -65,7 +66,7 @@ model TaskState {
 model Task {
   id String @id @default(cuid())
   title String @db.VarChar(250)
-  content String @db.VarChar(1024)
+  content String @db.VarChar(4096)
   dueDate DateTime?
   rank String
   archivedAt DateTime?
@@ -75,9 +76,22 @@ model Task {
   owner User @relation(fields: [ownerId], references: [id])
   stateId String?
   state TaskState? @relation(fields: [stateId], references: [id], onDelete: SetNull)
+  tags Tag[] @relation("TaskTags")
 
   @@index([projectId, stateId])
   @@index([stateId, rank])
+}
+
+model Tag {
+  id String @id @default(cuid())
+  name String @db.VarChar(50)
+  color String @db.VarChar(7)
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks Task[] @relation("TaskTags")
+
+  @@unique([projectId, name])
+  @@index([projectId])
 }
 
 model PinCode2FA {

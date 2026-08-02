@@ -25,4 +25,16 @@ export interface ListTasksParams extends PaginationParams {
 
 export interface GetBoardParams {
   projectId: string;
+  ownerId?: string;
+  tags?: string[];
+}
+
+export enum TaskExportType {
+  MARKDOWN = 'markdown',
+  JSON = 'json',
+}
+
+export interface TaskExportParams {
+  projectId: string;
+  type: TaskExportType;
 }

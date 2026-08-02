@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import {
   Task as PrismaTask,
+  Tag as PrismaTag,
+  User as PrismaUser,
   Prisma,
 } from '@/generated/prisma/client';
 import { generateKeyBetween } from 'fractional-indexing';
@@ -21,12 +23,18 @@ import {
   ListTasksParams,
   Board,
   Task,
+  TaskTag,
   UpdateTaskData,
   UpdateTaskParams,
 } from './task.types';
 
 @Injectable()
 export class TaskService {
+  static readonly taskInclude = {
+    tags: { orderBy: { name: 'asc' as const } },
+    owner: true,
+  } satisfies Prisma.TaskInclude;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly membershipService: MembershipService,
@@ -60,6 +68,7 @@ export class TaskService {
         ownerId: data.ownerId,
         rank,
       },
+      include: TaskService.taskInclude,
     });
 
     return this.toTask(
@@ -71,6 +80,7 @@ export class TaskService {
   async get(id: string, params?: GetTaskParams): Promise<Task | null> {
     const task = await this.prisma.task.findUnique({
       where: { id },
+      include: TaskService.taskInclude,
     });
 
     if (!task) return null;
@@ -95,6 +105,7 @@ export class TaskService {
   ): Promise<Task | null> {
     const existing = await this.prisma.task.findUnique({
       where: { id },
+      include: TaskService.taskInclude,
     });
 
     if (!existing) throw new NotFoundException();
@@ -135,10 +146,13 @@ export class TaskService {
         content: data.content,
         dueDate: data.dueDate,
         ownerId: data.ownerId,
-        ...(data.archived !== undefined && { archivedAt: data.archived ? new Date() : null }),
+        ...(data.archived !== undefined && {
+          archivedAt: data.archived ? new Date() : null,
+        }),
         ...(data.stateId !== undefined && { stateId: data.stateId }),
         ...(rank !== undefined && { rank }),
       },
+      include: TaskService.taskInclude,
     });
 
     return updated
@@ -168,6 +182,7 @@ export class TaskService {
         skip: params.page * params.take,
         take: params.take,
         orderBy: { rank: 'asc' },
+        include: TaskService.taskInclude,
       }),
       this.prisma.task.count({ where }),
     ]);
@@ -209,7 +224,14 @@ export class TaskService {
       include: {
         tasks: {
           orderBy: { rank: 'asc' },
-          where: { archivedAt: null },
+          where: {
+            archivedAt: null,
+            ...(params.ownerId && { ownerId: params.ownerId }),
+            ...(params.tags?.length
+              ? { tags: { some: { id: { in: params.tags } } } }
+              : {}),
+          },
+          include: TaskService.taskInclude,
         },
       },
     });
@@ -227,6 +249,75 @@ export class TaskService {
         ),
       })),
     };
+  }
+
+  async attachTag(
+    taskId: string,
+    tagId: string,
+    params?: GetTaskParams,
+  ): Promise<Task> {
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true, projectId: true },
+    });
+    if (!task) throw new NotFoundException('Task not found');
+
+    if (params?.sessionUserId) {
+      await this.membershipService.assertProjectMember({
+        userId: params.sessionUserId,
+        projectId: task.projectId,
+      });
+    }
+
+    const tag = await this.prisma.tag.findFirst({
+      where: { id: tagId, projectId: task.projectId },
+    });
+    if (!tag) throw new NotFoundException('Tag not found in project');
+
+    const updated = await this.prisma.task.update({
+      where: { id: taskId },
+      data: {
+        tags: { connect: { id: tagId } },
+      },
+      include: TaskService.taskInclude,
+    });
+
+    return this.toTask(
+      updated,
+      await this.resolvePosition(updated.stateId, updated.rank),
+    );
+  }
+
+  async detachTag(
+    taskId: string,
+    tagId: string,
+    params?: GetTaskParams,
+  ): Promise<Task> {
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true, projectId: true },
+    });
+    if (!task) throw new NotFoundException('Task not found');
+
+    if (params?.sessionUserId) {
+      await this.membershipService.assertProjectMember({
+        userId: params.sessionUserId,
+        projectId: task.projectId,
+      });
+    }
+
+    const updated = await this.prisma.task.update({
+      where: { id: taskId },
+      data: {
+        tags: { disconnect: { id: tagId } },
+      },
+      include: TaskService.taskInclude,
+    });
+
+    return this.toTask(
+      updated,
+      await this.resolvePosition(updated.stateId, updated.rank),
+    );
   }
 
   async delete(id: string, params?: DeleteTaskParams): Promise<void> {
@@ -333,7 +424,16 @@ export class TaskService {
     });
   }
 
-  private toTask(data: PrismaTask, position: number): Task {
+  private toTag(data: PrismaTag): TaskTag {
+    return {
+      id: data.id,
+      name: data.name,
+      color: data.color,
+      projectId: data.projectId,
+    };
+  }
+
+  private toTask(data: PrismaTask & { tags: PrismaTag[]; owner: PrismaUser }, position: number): Task {
     return {
       id: data.id,
       title: data.title,
@@ -343,6 +443,12 @@ export class TaskService {
       projectId: data.projectId,
       ownerId: data.ownerId,
       stateId: data.stateId,
+      tags: data.tags.map((tag) => this.toTag(tag)),
+      owner: {
+        id: data.ownerId,
+        firstName: data.owner.firstName,
+        lastName: data.owner.lastName,
+      },
     };
   }
 }

@@ -1,7 +1,7 @@
 'use server';
 
-import core from '@/config/core';
-import { getSession } from '@/lib/session-persistence';
+import { requireSession } from '@/actions/auth.actions';
+import httpClient from '@/config/httpClient';
 import {
   CreateTaskStateData,
   TaskState,
@@ -18,10 +18,7 @@ export async function createTaskState(
   projectId: string,
   data: CreateTaskStateSchema,
 ): Promise<TaskState> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+  await requireSession();
 
   const validated = createTaskStateSchema.safeParse(data);
   if (!validated.success) {
@@ -35,17 +32,14 @@ export async function createTaskState(
     ...(validated.data.afterId && { afterId: validated.data.afterId }),
   };
 
-  return core.taskState.create(projectId, payload);
+  return httpClient.post(`/projects/${projectId}/states`, payload);
 }
 
 export async function updateTaskState(
   stateId: string,
   data: UpdateTaskStateSchema,
 ): Promise<TaskState | null> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+  await requireSession();
 
   const validated = updateTaskStateSchema.safeParse(data);
   if (!validated.success) {
@@ -56,14 +50,11 @@ export async function updateTaskState(
     ...validated.data,
   };
 
-  return core.taskState.update(stateId, payload);
+  return httpClient.patch(`/task-states/${stateId}`, payload);
 }
 
 export async function deleteTaskState(stateId: string): Promise<void> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+  await requireSession();
 
-  return core.taskState.delete(stateId);
+  return httpClient.delete(`/task-states/${stateId}`);
 }

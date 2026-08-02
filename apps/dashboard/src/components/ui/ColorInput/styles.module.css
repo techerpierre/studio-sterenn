@@ -1,0 +1,50 @@
+.root {
+  --swatch-size: 18px;
+}
+
+.sm {
+  --swatch-size: 14px;
+}
+
+.md {
+  --swatch-size: 18px;
+}
+
+.lg {
+  --swatch-size: 20px;
+}
+
+.swatch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--swatch-size);
+  height: var(--swatch-size);
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-surface) 55%, transparent);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.swatchDisabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.nativePicker {
+  position: absolute;
+  inset: 0;
+  width: 140%;
+  height: 140%;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  opacity: 0;
+  cursor: inherit;
+  appearance: none;
+}

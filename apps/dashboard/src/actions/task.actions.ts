@@ -1,10 +1,11 @@
 'use server';
 
-import core from '@/config/core';
-import { getSession } from '@/lib/session-persistence';
+import { requireSession } from '@/actions/auth.actions';
+import httpClient from '@/config/httpClient';
 import {
   Board,
   CreateTaskData,
+  GetBoardParams,
   Task,
   UpdateTaskData,
 } from '@sterenn/api-contracts';
@@ -15,23 +16,28 @@ import {
   UpdateTaskSchema,
 } from '@/validation/task.schemas';
 
-export async function getBoard(projectId: string): Promise<Board> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+export async function getBoard(
+  projectId: string,
+  params?: Omit<GetBoardParams, 'projectId'>,
+): Promise<Board> {
+  await requireSession();
 
-  return core.task.getBoard({ projectId });
+  return httpClient.get(`/projects/${projectId}/board`, {
+    params: {
+      ...(params?.ownerId ? { ownerId: params.ownerId } : {}),
+      ...(params?.tags?.length ? { tags: params.tags } : {}),
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  });
 }
 
 export async function createTask(
   projectId: string,
   data: CreateTaskSchema,
 ): Promise<Task> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+  await requireSession();
 
   const validated = createTaskSchema.safeParse(data);
   if (!validated.success) {
@@ -50,17 +56,14 @@ export async function createTask(
     ...(validated.data.afterId && { afterId: validated.data.afterId }),
   };
 
-  return core.task.create(projectId, payload);
+  return httpClient.post(`/projects/${projectId}/tasks`, payload);
 }
 
 export async function updateTask(
   taskId: string,
   data: UpdateTaskSchema,
 ): Promise<Task | null> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+  await requireSession();
 
   const validated = updateTaskSchema.safeParse(data);
   if (!validated.success) {
@@ -71,25 +74,19 @@ export async function updateTask(
     ...validated.data,
   };
 
-  return core.task.update(taskId, payload);
+  return httpClient.patch(`/tasks/${taskId}`, payload);
 }
 
 export async function deleteTask(taskId: string): Promise<void> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+  await requireSession();
 
-  return core.task.delete(taskId);
+  return httpClient.delete(`/tasks/${taskId}`);
 }
 
 export async function markTaskAsArchived(taskId: string): Promise<Task | null> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
+  await requireSession();
 
-  return core.task.update(taskId, {
+  return httpClient.patch(`/tasks/${taskId}`, {
     archived: true,
-  });
+  } satisfies UpdateTaskData);
 }

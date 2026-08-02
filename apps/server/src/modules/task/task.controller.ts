@@ -13,8 +13,8 @@ import { SessionUser } from '../auth/auth.decorators';
 import { AuthGuard } from '../auth/auth.guard';
 import type { User } from '../user/user.types';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { toTaskContract } from './task.mapper';
 import { TaskService } from './task.service';
-import type { Task } from './task.types';
 
 @UseGuards(AuthGuard)
 @Controller('tasks')
@@ -30,7 +30,7 @@ export class TaskController {
       sessionUserId: sessionUser.id,
     });
 
-    return task ? this.toContract(task) : null;
+    return task ? toTaskContract(task) : null;
   }
 
   @Patch(':taskId')
@@ -45,7 +45,7 @@ export class TaskController {
       { sessionUserId: sessionUser.id },
     );
 
-    return task ? this.toContract(task) : null;
+    return task ? toTaskContract(task) : null;
   }
 
   @Delete(':taskId')
@@ -56,18 +56,5 @@ export class TaskController {
     return this.taskService.delete(taskId, {
       sessionUserId: sessionUser.id,
     });
-  }
-
-  private toContract(task: Task): Contracts.Task {
-    return {
-      id: task.id,
-      title: task.title,
-      content: task.content,
-      dueDate: task.dueDate ? task.dueDate.toISOString() : null,
-      position: task.position,
-      projectId: task.projectId,
-      ownerId: task.ownerId,
-      stateId: task.stateId,
-    };
   }
 }

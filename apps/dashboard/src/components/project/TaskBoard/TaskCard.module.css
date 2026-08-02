@@ -36,7 +36,14 @@
   text-overflow: ellipsis;
 }
 
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
 .dueBadge {
   flex-shrink: 0;
-  align-self: flex-start;
 }

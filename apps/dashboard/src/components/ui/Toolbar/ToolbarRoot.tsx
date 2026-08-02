@@ -3,6 +3,7 @@
 import clsx from '@/lib/clsx';
 import {
   Children,
+  cloneElement,
   isValidElement,
   ReactElement,
   ReactNode,
@@ -45,6 +46,48 @@ function isToolbarItem(
   return type.displayName === ToolbarItem.displayName;
 }
 
+/** Duck-type for conditional wrappers like `When` (condition + children). */
+function isConditionalWrapper(
+  child: ReactNode
+): child is ReactElement<{
+  condition: boolean;
+  children?: ReactNode;
+  fallback?: ReactNode;
+}> {
+  if (!isValidElement(child) || isToolbarItem(child)) return false;
+  const props = child.props;
+  return (
+    typeof props === 'object' &&
+    props !== null &&
+    'condition' in props &&
+    typeof (props as { condition: unknown }).condition === 'boolean'
+  );
+}
+
+/**
+ * Flatten toolbar items, including those nested in conditional wrappers.
+ * Re-key uniquely — nested `Children.toArray` would otherwise reuse `.0`, `.1`…
+ */
+function collectToolbarItems(
+  children: ReactNode,
+  keyPrefix = ''
+): ReactElement<ToolbarItemProps>[] {
+  return Children.toArray(children).flatMap((child, index) => {
+    const key = `${keyPrefix}${index}`;
+    if (isToolbarItem(child)) {
+      return [cloneElement(child, { key })];
+    }
+    if (isConditionalWrapper(child)) {
+      const { condition, children: nested, fallback = null } = child.props;
+      return collectToolbarItems(
+        condition ? nested : fallback,
+        `${key}.`,
+      );
+    }
+    return [];
+  });
+}
+
 export function ToolbarRoot({
   children,
   className,
@@ -74,7 +117,7 @@ export function ToolbarRoot({
   }, [expanded, setExpanded]);
 
   const items = useMemo(
-    () => Children.toArray(children).filter(isToolbarItem),
+    () => collectToolbarItems(children),
     [children]
   );
 

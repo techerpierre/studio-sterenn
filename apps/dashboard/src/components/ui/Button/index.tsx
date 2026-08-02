@@ -34,10 +34,14 @@ export function Button({
   disabled = false,
   lodingLabel,
   className,
+  children,
+  ref,
   ...props
 }: ButtonProps) {
   return (
     <button
+      {...props}
+      ref={ref}
       className={clsx(
         styles.button,
         styles[size],
@@ -49,10 +53,9 @@ export function Button({
         className
       )}
       disabled={disabled || loading}
-      {...props}
     >
       {loading && <Loader size="sm" className={styles.loader} />}
-      {loading && lodingLabel ? lodingLabel : props.children}
+      {loading && lodingLabel ? lodingLabel : children}
     </button>
   );
 }

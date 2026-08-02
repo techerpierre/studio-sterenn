@@ -8,7 +8,7 @@ import {
 import { PinCode2FA as PrismaPinCode2FA } from '@/generated/prisma/client';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { PinCode2FAProcessor } from './pincode-2fa.processor';
+import { PinCode2FAAction, PinCode2FAQueueName } from './pincode-2fa.constants';
 
 @Injectable()
 export class PinCode2FAService {
@@ -16,7 +16,7 @@ export class PinCode2FAService {
 
   constructor(
     private readonly prisma: PrismaService,
-    @InjectQueue(PinCode2FAProcessor.QUEUE_NAME)
+    @InjectQueue(PinCode2FAQueueName)
     private readonly pinCode2FAQueue: Queue,
   ) {}
 
@@ -31,7 +31,7 @@ export class PinCode2FAService {
     });
 
     await this.pinCode2FAQueue.add(
-      PinCode2FAProcessor.ACTION_DELETE_PIN_CODE,
+      PinCode2FAAction.DeletePinCode,
       { code } as DeletePinCodeProcessData,
       { delay: this.PinCodeDeletionTime },
     );

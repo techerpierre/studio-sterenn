@@ -1,25 +1,25 @@
-"use server";
+'use server';
 
-import core from "@/config/core";
+import { requireSession } from '@/actions/auth.actions';
+import httpClient from '@/config/httpClient';
 import {
   getCurrentWorkspace as getPersistedWorkspace,
-  getSession,
   persistCurrentWorkspace,
-} from "@/lib/session-persistence";
+} from '@/lib/session-persistence';
+import { WorkspaceSelectorData } from '@/types/workspace.types';
 import {
   createWorkspaceSchema,
   CreateWorkspaceSchema,
-} from "@/validation/workspace.schemas";
+} from '@/validation/workspace.schemas';
 import {
   ListWorkspacesParams,
   MembershipRole,
   Paginated,
   Workspace,
   WorkspaceWithMembership,
-} from "@sterenn/api-contracts";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { WorkspaceSelectorData } from "@/types/workspace.types";
+} from '@sterenn/api-contracts';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 function withCurrentWorkspace(
   results: WorkspaceWithMembership[],
@@ -39,34 +39,30 @@ function withCurrentWorkspace(
 export async function listWorkspaces(
   params?: ListWorkspacesParams,
 ): Promise<Paginated<WorkspaceWithMembership>> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
-  return core.workspace.list({
-    page: params?.page ?? 0,
-    take: params?.take ?? 10,
+  await requireSession();
+
+  return httpClient.get('/workspaces', {
+    params: {
+      page: params?.page ?? 0,
+      take: params?.take ?? 10,
+    },
   });
 }
 
-export async function setCurrentWorkspace(workspace: WorkspaceWithMembership): Promise<void> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
+export async function setCurrentWorkspace(
+  workspace: WorkspaceWithMembership,
+): Promise<void> {
+  await requireSession();
   await persistCurrentWorkspace(workspace);
-  revalidatePath("/dashboard");
-  revalidatePath("/workspaces");
-  redirect("/dashboard");
+  revalidatePath('/dashboard');
+  revalidatePath('/workspaces');
+  redirect('/dashboard');
 }
 
 export async function ensureCurrentWorkspace(
   workspace: WorkspaceWithMembership,
 ): Promise<void> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
+  await requireSession();
   const existing = await getPersistedWorkspace();
   if (existing) {
     return;
@@ -75,8 +71,9 @@ export async function ensureCurrentWorkspace(
 }
 
 export async function getCurrentWorkspace(): Promise<WorkspaceWithMembership | null> {
-  const session = await getSession();
-  if (!session) {
+  try {
+    await requireSession();
+  } catch {
     return null;
   }
   return getPersistedWorkspace();
@@ -85,14 +82,14 @@ export async function getCurrentWorkspace(): Promise<WorkspaceWithMembership | n
 export async function getWorkspaceSelectorData(
   params?: ListWorkspacesParams,
 ): Promise<WorkspaceSelectorData> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
+  await requireSession();
 
   const take = params?.take ?? 10;
   const page = params?.page ?? 0;
-  const paginated = await core.workspace.list({ page, take });
+  const paginated = await httpClient.get<Paginated<WorkspaceWithMembership>>(
+    '/workspaces',
+    { params: { page, take } },
+  );
 
   const persistedWorkspace = await getPersistedWorkspace();
   const shouldPersistCurrent =
@@ -110,21 +107,23 @@ export async function getWorkspaceSelectorData(
 export async function createWorkspace(
   data: CreateWorkspaceSchema,
 ): Promise<WorkspaceWithMembership> {
-  const session = await getSession();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
+  await requireSession();
+
   const validatedData = createWorkspaceSchema.safeParse(data);
   if (!validatedData.success) {
     throw new Error(validatedData.error.message);
   }
-  const workspace = await core.workspace.create(validatedData.data);
+
+  const workspace = await httpClient.post<Workspace>(
+    '/workspaces',
+    validatedData.data,
+  );
   const workspaceWithMembership: WorkspaceWithMembership = {
     ...workspace,
     role: MembershipRole.ADMIN,
   };
   await persistCurrentWorkspace(workspaceWithMembership);
-  revalidatePath("/dashboard");
-  revalidatePath("/workspaces");
+  revalidatePath('/dashboard');
+  revalidatePath('/workspaces');
   return workspaceWithMembership;
 }

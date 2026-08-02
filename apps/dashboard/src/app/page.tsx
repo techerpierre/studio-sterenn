@@ -19,6 +19,7 @@ import {
 import { Loader } from "@/components/ui/Loader";
 import { Button } from "@/components/ui/Button";
 import { TextInput } from "@/components/ui/TextInput";
+import { ColorInput } from "@/components/ui/ColorInput";
 import { TimeInput } from "@/components/ui/TimeInput";
 import { DateInput } from "@/components/ui/DateInput";
 import { Text } from "@/components/ui/Text";
@@ -497,6 +498,25 @@ function ToolbarShowcase() {
   );
 }
 
+function ColorInputExample() {
+  const [color, setColor] = useState("#2563eb");
+
+  return (
+    <Box direction="column" gap={8} style={{ maxWidth: 320 }}>
+      <Text.BodySmall>ColorInput</Text.BodySmall>
+      <ColorInput
+        value={color}
+        onChange={(event) => setColor(event.currentTarget.value)}
+      />
+      <ColorInput defaultValue="#7c3aed" variant="secondary" />
+      <ColorInput defaultValue="#16a34a" size="sm" />
+      <ColorInput defaultValue="#ea580c" size="lg" rounded />
+      <ColorInput defaultValue="#dc2626" disabled />
+      <Text.Caption>controlled: {color}</Text.Caption>
+    </Box>
+  );
+}
+
 export default function Home() {
   return (
     <Toast>
@@ -555,6 +575,7 @@ export default function Home() {
           <TextInput type="text" value="Disabled" disabled />
           <TextInput type="text" placeholder="Loading" loading />
           <TextInput type="password" placeholder="Password" />
+          <ColorInputExample />
           <Box gap={12} wrap align="center">
             <TimeInput format="hh:mm:ss" defaultValue={new Date()} />
             <TimeInput format="hh:mm" defaultValue={new Date()} />

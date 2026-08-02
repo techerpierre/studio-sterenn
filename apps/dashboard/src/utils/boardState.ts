@@ -2,6 +2,48 @@ import { Board, BoardState, Task, TaskState } from '@sterenn/api-contracts';
 
 export type BoardItems = Record<string, string[]>;
 
+export type TaskMoveOrder = {
+  stateId: string;
+  beforeId?: string;
+  afterId?: string;
+};
+
+export function boardToItems(states: BoardState[]): BoardItems {
+  return Object.fromEntries(
+    states.map((state) => [state.id, state.tasks.map((task) => task.id)]),
+  );
+}
+
+export function collectTasks(states: BoardState[]): Map<string, Task> {
+  const map = new Map<string, Task>();
+  for (const state of states) {
+    for (const task of state.tasks) {
+      map.set(task.id, task);
+    }
+  }
+  return map;
+}
+
+/** Resolve target column + neighbors for a task id in a DnD items map. */
+export function resolveTaskMoveOrder(
+  items: BoardItems,
+  taskId: string,
+): TaskMoveOrder | null {
+  const stateId = Object.keys(items).find((id) => items[id].includes(taskId));
+  if (!stateId) return null;
+
+  const column = items[stateId];
+  const index = column.indexOf(taskId);
+
+  return {
+    stateId,
+    ...(index > 0 ? { beforeId: column[index - 1] } : {}),
+    ...(index >= 0 && index < column.length - 1
+      ? { afterId: column[index + 1] }
+      : {}),
+  };
+}
+
 function renumberTaskPositions(tasks: Task[], stateId: string): Task[] {
   return tasks.map((task, index) => ({
     ...task,
@@ -57,6 +99,25 @@ export function removeTask(board: Board, taskId: string): Board {
   return {
     ...board,
     states: removeTaskFromStates(board.states, taskId),
+  };
+}
+
+/**
+ * Merge a partial update into an existing task without reordering columns.
+ */
+export function patchTask(
+  board: Board,
+  taskId: string,
+  patch: Partial<Task>,
+): Board {
+  return {
+    ...board,
+    states: board.states.map((state) => ({
+      ...state,
+      tasks: state.tasks.map((task) =>
+        task.id === taskId ? { ...task, ...patch } : task,
+      ),
+    })),
   };
 }
 

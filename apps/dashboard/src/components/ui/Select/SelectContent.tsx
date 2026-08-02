@@ -194,6 +194,13 @@ export function SelectContent({
     <div className={clsx(styles.root, className)}>
       {renderTrigger()}
 
+      {/* Keep items mounted when closed so option labels stay registered for the trigger. */}
+      {!open ? (
+        <div className={styles.optionsRegistrar} hidden aria-hidden>
+          {children}
+        </div>
+      ) : null}
+
       {open ? (
         <FloatingPortal id="popup-root">
           <div

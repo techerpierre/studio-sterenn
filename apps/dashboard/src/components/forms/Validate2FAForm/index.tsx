@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { OTPInput } from "@/components/ui/OTPInput";
 import { Text } from "@/components/ui/Text";
-import { useToast } from "@/components/ui/Toast";
+import { useActionFeedback } from "@/hooks/useActionFeedback";
 import {
   Validate2faSchema,
   validate2faSchema,
@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 export function Validate2FAForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
+  const { run } = useActionFeedback();
 
   const {
     control,
@@ -32,18 +32,20 @@ export function Validate2FAForm() {
   });
 
   const onSubmit = async (data: Validate2faSchema) => {
-    try {
-      await validate2fa(data);
-      const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
-      router.push(callbackUrl);
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Code invalide",
-        description: "Le code de vérification est incorrect ou expiré.",
-        variant: "danger",
-      });
-    }
+    const ok = await run(
+      async () => {
+        await validate2fa(data);
+        return true;
+      },
+      {
+        errorTitle: "Code invalide",
+        errorDescription: "Le code de vérification est incorrect ou expiré.",
+      },
+    );
+    if (!ok) return;
+
+    const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+    router.push(callbackUrl);
   };
 
   return (
